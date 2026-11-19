@@ -25,7 +25,7 @@ This is the requirements document for Aflami, structured after the SRS outline i
 | FR-FILM | Film page and credits | Abdullah |
 | NFR-xxx | Non-functional (SEC, PRV, USA, PERF, REL, MNT) | Anas |
 
-**Every requirement carries the same attributes**, as 29148 asks: ID, statement ("The system shall …"), rationale, priority (Must / Should / Could), source (user story or supervisor), and verification method (Test, Demonstration, Inspection or Analysis).
+**Every requirement carries the same attributes**, as 29148 asks: ID, statement ("The system shall …"), rationale, priority (Must / Should / Future), source (user story or supervisor), and verification method (Test, Demonstration, Inspection or Analysis).
 
 ## 1 Introduction
 
@@ -37,12 +37,29 @@ This SRS defines what version 1 of Aflami must do. It is the agreement between t
 
 ### 1.2 Scope
 
-Aflami is a web platform where a short-film team creates a project, casts its members, distributes tasks and publishes a film page with full credits.
+Aflami is an Arabic-first web platform for student and independent short-film makers in Saudi Arabia and their crews. In one place, a team creates its project, casts its members, distributes the tasks and publishes a film page with full credits. Today these steps are spread across WhatsApp, shared drives and social media; Aflami links them into one record, so every person who worked on the film ends up in its credits. The first planned users are student filmmakers and university film clubs.
 
-- **In version 1:** accounts and per-project roles, projects and scripts, casting calls and applications, the team and film roles, tasks, and the film page with a YouTube video and credits.
-- **Future work, not in version 1:** AI drafts of roles and tasks from the script, our own video hosting, viewer search and recommendations, full production scheduling, and direct upload to YouTube.
+Aflami has three kinds of user. A **Visitor** has no account and can only watch published film pages. A **Viewer** has an account, which liking or disliking a film (a Should feature) needs. A **Creator** chooses that type at sign-up, or switches from Viewer later, and can create projects, apply to casting calls, join teams and rate films. Inside each project, a Creator is the Owner, a Manager or a Member (section 1.5).
 
-*Guidance: keep this list identical to the MVP scope in the proposal.*
+Every feature has one of three levels:
+
+- **Must:** part of version 1; the CPIT-499 build is not finished without it.
+- **Should:** part of version 1 if time allows; built only after every Must feature works.
+- **Future:** not in version 1.
+
+| Area | Must | Should | Future |
+| --- | --- | --- | --- |
+| Accounts | Registration and sign-in; sign out; account type (Viewer or Creator) chosen at sign-up; permission levels Owner, Manager and Member, with the owner choosing managers; notifications inside the site; my projects page; change password using the old password | Profile with past credits and a link to past work; edit my profile; delete my account | Email notifications; reset a forgotten password (needs an email service); sign in with Google or Apple |
+| Projects and scripts | Create a project and upload the script (PDF, Word, Pages or plain text; only the newest is kept); edit project details | Project overview; members download the script; archive or delete a project | Script version history; project poster; transfer ownership |
+| Casting | Publish casting calls, apply, shortlist, accept or reject; a public link for each call; edit and close a call; applicant adds a photo or a demo-reel link | A page of all open calls; call details (location, shooting dates, paid or unpaid); my applications page; share buttons | Withdraw an application; filter and sort applications; automatic posting to social media; audition scheduling |
+| Team | Invitations to registered users, accepted or declined on an invitation page; team page with each member's film roles; character names for actors | Leave a project; owner removes a member; change a member's film roles | Team contact list |
+| Tasks | Create, assign and update tasks (To do, In progress, Done); reopen a done task; task attachments (images, files and links, with a size limit) | Overdue tasks highlighted; task comments; board view | Production scheduling; calendar view; my tasks across projects |
+| Film page and credits | Credits proposed from the team, then edited and approved; film page with the YouTube video, synopsis, details and credits; only the owner publishes; public or hidden at any time; watching without an account; star rating 1 to 5 by Creators outside the film's team | Credits for people without an account; credits linked to profiles; public gallery of films; like or dislike | Our own video hosting or direct upload to YouTube; viewer search and recommendations; reorder credits; viewer comments |
+| Communication | Announcements from the owner; activity log of who approved what, and when | Team chat | — |
+| Interface and platform | Arabic, right to left, on phone and desktop; Arabic and English switch for the interface (team content is never translated); terms of use and privacy policy; help and FAQ | Light and dark theme; admin panel | Landing page; report inappropriate content |
+| AI assistance | — | AI drafts of the roles and casting ad, the tasks, and the film title and description, from the script; a person approves, edits or rejects every draft; every suggestion and its outcome is logged; script consent and privacy before any script is sent | — |
+
+**Success criterion.** Version 1 succeeds when two real filmmaker teams complete the whole journey on Aflami: create the project, build the team, finish the tasks and publish the film page. For each team we report the time per step, whether they completed it without help, and the errors they met.
 
 ### 1.3 Product perspective
 
@@ -68,15 +85,19 @@ Aflami is a new, self-contained web system. Today the same teams use WhatsApp, s
 
 ### 1.5 User characteristics
 
+Every person has one account type. Inside each project, a Creator also has one permission level.
+
 | User class | Who | What they can do | Expected skill |
 | --- | --- | --- | --- |
-| Owner | Student who creates the project | Everything, including publishing the film page and giving or removing manager rights | Basic web use |
+| Visitor | Anyone without an account | Watch published film pages | None |
+| Viewer | Account of type Viewer | Everything a Visitor can, plus like or dislike a film (Should) | Basic web use |
+| Creator | Account of type Creator, chosen at sign-up or switched to later from Viewer | Create projects, apply to casting calls, join teams, and rate films 1 to 5 (not their own team's film) | Basic web use |
+| Owner | Creator who creates the project | Everything, including publishing or hiding the film page and giving or removing manager rights | Basic web use |
 | Manager | Member chosen by the owner; a project can have several | Everything except publishing and managing permissions: accept applicants, invite people, manage tasks, approve credits | Basic web use |
 | Member | Accepted team member | See the project, update the tasks they own | Basic web use |
-| Applicant | Person who applies to a casting call | See only their own application until accepted | Basic web use |
-| Viewer | Anyone | See published film pages only, no account needed | None |
+| Applicant | Creator who applies to a casting call | See only their own application until accepted | Basic web use |
 
-*Decided in week 11: the second level is called Manager, so it never clashes with film roles such as Director or Producer.*
+*Decided in week 11: the second level is called Manager, so it never clashes with film roles such as Director or Producer. Decided in week 12: three account types, Visitor, Viewer and Creator; only Creators apply to casting calls and join teams.*
 
 ### 1.6 Limitations
 
@@ -92,7 +113,7 @@ Aflami is a new, self-contained web system. Today the same teams use WhatsApp, s
 
 ### 1.8 Apportioning of requirements
 
-*Guidance: mark each requirement in section 3 as version 1 (Must) or later (Could), so the build in CPIT-499 can be split into iterations.*
+Each requirement in section 3 takes the level of its feature in section 1.2: Must, Should or Future. CPIT-499 builds every Must requirement first, one area per iteration, then the Should requirements in the order the team agrees. Future requirements are listed for completeness and are not built or tested in version 1.
 
 ## 2 References
 
@@ -168,7 +189,7 @@ Functions are written three ways that point to each other: user stories (what pe
 | FR-ACC-02 | The system shall check the user's role in the project on every request that reads or changes project data. | Must | Supervisor, permissions design | Test |
 | FR-ACC-03 | Only the owner shall give or remove manager rights; a project can have several managers. | Must | Week 11 decision, UC-03 | Test |
 | FR-PRJ-01 | The system shall let a signed-in user create a project with a title, idea and script. | Must | UC-02 | Test |
-| FR-PRJ-02 | The system shall take the script as a PDF, show it only to project members, and keep only the newest version. | Must | Week 11 decision | Test |
+| FR-PRJ-02 | The system shall take the script as a PDF, Word (.docx), Pages or plain-text file, show it only to project members, and keep only the newest version. | Must | Week 11 decision | Test |
 | FR-CST-01 | The system shall let the owner or a manager publish a casting call with a film role, description and deadline. | Must | UC-04 | Test |
 | FR-CST-02 | The system shall create a membership for the applicant when the owner or a manager accepts an application. | Must | US-CST-02, UC-06 | Test |
 | FR-TEAM-01 | The system shall let one member hold more than one film role in a project. | Must | Table review scenario | Test |
