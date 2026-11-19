@@ -37,8 +37,6 @@ Aflami is one web app and one back end with a module per feature, over one Postg
 Covers: FR-ACC-02, NFR-MNT-01, NFR-PRT-01.
 
 ## 2 Data model (ERD)
-
-## 2 Data model (ERD)
  
 Seventeen tables hold version 1: sixteen are needed by Must features, and one (reactions) only by a Should feature. The key idea is one chain: an accepted application creates a membership, the membership owns tasks, and it becomes a credit.
  
