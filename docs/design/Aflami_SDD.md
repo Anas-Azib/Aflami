@@ -38,25 +38,38 @@ Covers: FR-ACC-02, NFR-MNT-01, NFR-PRT-01.
 
 ## 2 Data model (ERD)
 
-Ten tables hold version 1. The key idea is one chain: an accepted application creates a membership, the membership owns tasks, and it becomes a credit.
-
-| Table | Main fields | Links to | Rules |
+## 2 Data model (ERD)
+ 
+Seventeen tables hold version 1: sixteen are needed by Must features, and one (reactions) only by a Should feature. The key idea is one chain: an accepted application creates a membership, the membership owns tasks, and it becomes a credit.
+ 
+![Aflami ERD](../../design/exports/Aflami_ERD.png)
+ 
+Source: `design/diagrams/Aflami_ERD.drawio`.
+ 
+| Table | Holds | Links to | Rules |
 | --- | --- | --- | --- |
-| users | name, email, password_hash | — | email is unique |
-| projects | title, idea, youtube_url, synopsis, published_at, created_by | users | published_at is empty until published; only the owner publishes |
-| scripts | project, file_key (PDF in private storage), version, uploaded_by, uploaded_at | projects, users | only the newest is kept: a new upload deletes the old row and its file; only members can open it |
-| memberships | user, project, permission (owner, manager, member), status (active, left), joined_at, left_at | users, projects | one per user and project; one owner per project, many managers allowed; only the owner gives or removes manager; never deleted |
-| member_roles | membership, film_role, character_name | memberships | one member can hold many film roles |
-| invitations | project, invitee, film_role, invited_by, status (pending, accepted, declined) | projects, users | sent by the owner or a manager to a registered user only; shown to the invitee as a notification inside Aflami; accepting creates a membership |
-| casting_calls | project, film_role, description, deadline, status (open, closed) | projects | — |
-| applications | call, applicant, message, status (submitted, accepted, rejected), decided_by, decided_at | casting_calls, users | one per applicant and call |
-| tasks | project, title, description, owner, status (to do, in progress, done), deadline, created_by | projects, memberships | owner becomes empty when that member leaves |
-| credits | project, membership, display_name, film_role, character_name, sort_order, status (proposed, approved), approved_by | projects, memberships | membership is empty for people outside the platform |
-
-*Guidance: draw the ERD in crow's foot notation with primary keys, foreign keys, the unique rules and the cardinality of each link.*
-
-*Decided in week 11: invitations stay in version 1 (the invited person accepts or declines); the second permission level is called Manager; the scripts table keeps only the newest PDF.*
-
+| users | One account: name, email, password hash, account type (viewer or creator) | — | Email is unique |
+| user_settings | One user's settings: language, theme, AI suggestions on or off, when the "next episode" pop-up appears | users | Exactly one row per user, created with default values at sign-up. Visitors without an account keep their language and theme in a browser cookie |
+| projects | One film: title, idea, synopsis, film details, YouTube link, status (draft, published or hidden) | users (creator) | Only the owner publishes or hides it |
+| scripts | The project's script file and its type (PDF, DOCX, Pages or TXT) | projects | At most one per project: a new upload replaces the old file; only members can open it |
+| memberships | A person's place in a project: permission (owner, manager or member) and status (active or left) | users, projects | One per user and project; one owner per project, many managers allowed; never deleted |
+| member_roles | The film roles a member holds, with the character name for actors | memberships | A member can hold many film roles |
+| invitations | An invitation to a registered user, with the film role offered | projects, users | Sent by the owner or a manager; accepting creates a membership |
+| casting_calls | A public call for one film role, with a deadline | projects | Status open or closed; closing stops new applications only |
+| applications | One person's application: message, optional link and photo, shortlisted flag | casting_calls, users | One per person and call; waiting applications stay when the call closes |
+| tasks | A piece of work: owner, status, deadline | projects, memberships | Owner becomes empty when that member leaves |
+| task_attachments | Images, files or links on a task | tasks | Size limit per file |
+| credits | One line of the film's credits | projects, memberships | Proposed from the team, then approved; membership is empty for people outside Aflami |
+| ratings | A creator's star rating of a film, 1 to 5 | users, projects | One per user and film; the film's own team cannot rate it |
+| reactions (Should) | A like or dislike | users, projects | One per user and film; needs an account |
+| notifications | A message to one user inside Aflami | users, projects | Read or unread |
+| announcements | A message from the owner to the whole team | projects, users (author) | — |
+| activity_log | Who did what and when in a project | projects, users (actor) | Written by the system, never edited |
+ 
+*Fields ending in `_by`, and `author_id` and `actor_id`, record who did something. They link to users; the diagram leaves out their lines to stay readable.*
+ 
+*Decided in weeks 11 and 12: invitations stay in version 1; the second permission level is called Manager; only the newest script is kept; an application is a message plus an optional link; closing a call leaves waiting applications as they are; shortlisting is a yes/no flag, not a separate status.*
+ 
 Covers: SRS 3.5, FR-ACC-03, FR-PRJ-02, FR-CST-02, FR-TEAM-01, FR-TEAM-02, FR-FILM-01.
 
 ## 3 Class diagram

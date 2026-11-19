@@ -179,24 +179,32 @@ Functions are written three ways that point to each other: user stories (what pe
 | FR-FILM-03 | Only the owner shall publish the film page. | Must | Week 11 decision, UC-11 | Test |
 
 ### 3.3 Usability requirements
-
-| ID | Requirement | Priority | Verification |
-| --- | --- | --- | --- |
-| NFR-USA-01 | The interface shall be in Arabic, right to left, on phone and desktop screens. | Must | Inspection |
-| NFR-USA-02 | A first-time owner shall create a project and publish a casting call without help. | Should | Test with the evaluation teams |
-
-*Guidance: state each usability requirement so the evaluation in CPIT-499 can measure it.*
-
+ 
+| ID | Requirement | Priority | Source | Verification |
+| --- | --- | --- | --- | --- |
+| NFR-USA-01 | The interface shall be in Arabic, right to left, on phone and desktop screens. | Must | Scope | Inspection |
+| NFR-USA-02 | A first-time owner shall create a project and publish a casting call without help. | Should | Evaluation plan | Test with the evaluation teams |
+| NFR-USA-03 | Arabic shall be the default language, and a switch shall change the interface to English and back. | Must | Scope | Test |
+| NFR-USA-04 | The language switch shall change only the interface (menus, buttons and system messages); what users write shall be shown as written and never translated. | Must | Decision, 16 Nov | Inspection |
+| NFR-USA-05 | Arabic, English and mixed text in names, titles, tasks and credits shall be saved and shown in the right direction, with no broken letters. | Must | Arabic-first scope | Test with Arabic sample data |
+| NFR-USA-06 | Dates and deadlines shall be shown in the Asia/Riyadh time zone. | Must | Section 1.3.8 | Test |
+| NFR-USA-07 | Every screen shall work on a phone screen 360 pixels wide without sideways scrolling. | Must | Scope | Test |
+ 
 ### 3.4 Performance requirements
-
-*Guidance: give numbers you can test, for example the response time for 95% of requests and the number of users at the same time. Choose them with the hosting plan; mark them as proposed until tested.*
-
+ 
+| ID | Requirement | Priority | Source | Verification |
+| --- | --- | --- | --- | --- |
+| NFR-PERF-01 | 95% of page requests shall finish within 3 seconds while 20 users use Aflami at the same time *(proposed)*. | Should | Evaluation with two teams | Test: load test before the evaluation |
+| NFR-PERF-02 | The system shall hold at least 50 accounts and 10 projects with their files within the free hosting limits *(proposed)*. | Should | Hosting plan | Analysis |
+ 
 ### 3.5 Logical database requirements
-
-- The data model holds: users, projects, scripts, memberships, member roles, invitations, casting calls, applications, tasks and credits (the ERD is in the [design document](../design/Aflami_SDD.md)).
-- A user has at most one membership per project, and one application per casting call. A project keeps only its newest script: a new PDF upload deletes the old one.
+ 
+- The data model has seventeen tables: users, user_settings, projects, scripts, memberships, member_roles, invitations, casting_calls, applications, tasks, task_attachments, credits, ratings, reactions, notifications, announcements and activity_log. The ERD is in section 2 of the [design document](../design/Aflami_SDD.md).
+- A user has at most one membership per project, one application per casting call, and one rating and one reaction per film.
+- A project keeps only its newest script: a new upload deletes the old file.
 - A member who leaves is marked as left, not deleted, so tasks and credits keep their history.
-- *Guidance: add retention rules (how long data is kept) and who may read each table.*
+- Only members of a project can read its script, tasks, attachments and announcements; only the owner and managers can read its applications.
+
 
 ### 3.6 Design constraints
 
@@ -205,21 +213,33 @@ Functions are written three ways that point to each other: user stories (what pe
 - Film videos stay on YouTube and are shown through its embedded player.
 - Version 1 calls no external AI model.
 
-### 3.7 Standards compliance
 
+### 3.7 Standards compliance
+ 
 - ISO/IEC/IEEE 29148:2018 for this document.
-- *Guidance: check what the Saudi Personal Data Protection Law asks for the personal data Aflami keeps (names, emails, scripts).*
+- Saudi Personal Data Protection Law: Aflami collects only the personal data it needs, explains why in its privacy policy, and lets users ask for their data to be corrected or deleted (NFR-PRV-03, NFR-PRV-04).
 
 ### 3.8 Software system attributes
-
-| ID | Attribute | Requirement (starter) | Verification |
-| --- | --- | --- | --- |
-| NFR-SEC-01 | Security | Passwords shall be stored only as salted hashes. | Inspection |
-| NFR-PRV-01 | Privacy | A project's script shall be visible only to its accepted members. | Test |
-| NFR-REL-01 | Reliability | The database shall be backed up at least once a day. | Inspection |
-| NFR-AVL-01 | Availability | *Set a target that the hosting plan can meet.* | Analysis |
-| NFR-MNT-01 | Maintainability | Automated tests shall run on every pull request before merge. | Inspection |
-| NFR-PRT-01 | Portability | The system shall work on current Chrome, Safari and Firefox. | Test |
+ 
+| ID | Attribute | Requirement | Priority | Verification |
+| --- | --- | --- | --- | --- |
+| NFR-SEC-01 | Security | Passwords shall be stored only as salted hashes. | Must | Inspection |
+| NFR-SEC-02 | Security | Every page and every request to the server shall use HTTPS. | Must | Inspection |
+| NFR-SEC-03 | Security | Changing a password shall require the current password. | Must | Test |
+| NFR-SEC-04 | Security | The system shall accept only allowed file types (scripts: PDF, DOCX, Pages, TXT; photos and attachments: images, PDF, DOCX, TXT), each up to 10 MB *(proposed)*. | Must | Test |
+| NFR-SEC-05 | Security | Scripts and task attachments shall open only through links that expire within 15 minutes *(proposed)*, made after a permission check. | Must | Test |
+| NFR-SEC-06 | Security | Sign-in to an account shall pause for 15 minutes after 5 failed attempts *(proposed)*. | Should | Test |
+| NFR-SEC-07 | Security | Passwords and keys for the database and file storage shall never be stored in the repository. | Must | Inspection |
+| NFR-PRV-01 | Privacy | A project's script shall be visible only to its active members. | Must | Test |
+| NFR-PRV-02 | Privacy | Public pages (film pages and casting call links) shall show names, film roles and credits only, never email addresses. | Must | Test |
+| NFR-PRV-03 | Privacy | A person shall accept the terms of use and privacy policy before the account is created. | Must | Test |
+| NFR-PRV-04 | Privacy | A user's personal data shall be deleted when they ask; until "Delete my account" is built, the team deletes it by hand. | Should | Demonstration |
+| NFR-PRV-05 | Privacy | An application shall be visible only to the applicant and to the owner and managers of that project. | Must | Test |
+| NFR-REL-01 | Reliability | The database shall be backed up at least once a day. | Must | Inspection |
+| NFR-AVL-01 | Availability | The system shall be available 99% of the time during the evaluation weeks *(proposed)*. | Should | Analysis of uptime logs |
+| NFR-MNT-01 | Maintainability | Automated tests shall run on every pull request before merge. | Must | Inspection |
+| NFR-MNT-02 | Maintainability | Each feature area (Accounts and roles, Projects and scripts, Casting and team, Approvals, Tasks, Film page and credits) shall be a separate back-end module. | Must | Inspection |
+| NFR-PRT-01 | Portability | The system shall work on current Chrome, Safari, Firefox and Edge, on desktop and on Android and iOS phones. | Must | Test |
 
 ### 3.9 Supporting information
 
@@ -231,12 +251,16 @@ Every requirement in section 3 is checked in CPIT-499 by one of four methods: **
 
 | Requirements | Method | When | Evidence |
 | --- | --- | --- | --- |
-| FR-ACC-02, NFR-PRV-01 | Test: automated permission tests | Every pull request | Test report in GitHub Actions |
+| FR-ACC-02, NFR-PRV-01, NFR-PRV-05, NFR-SEC-05 | Test: automated permission tests | Every pull request | Test report in GitHub Actions |
 | FR-CST, FR-TEAM, FR-TSK | Test: integration tests of each flow | Before the first integrated trial | Test report |
-| FR-FILM-01, FR-FILM-02 | Demonstration | First integrated trial | Recording or checklist |
+| FR-FILM-01, FR-FILM-02, NFR-PRV-02 | Demonstration and test | First integrated trial | Recording or checklist |
+| NFR-SEC-03, NFR-SEC-04, NFR-SEC-06, NFR-PRV-03 | Test | Before the first integrated trial | Test report |
+| NFR-USA-03 to NFR-USA-07, NFR-PRT-01 | Test on phones and browsers with Arabic sample data | Before the evaluation | Checklist with screenshots |
 | NFR-USA-01, NFR-USA-02 | Test with the two evaluation teams | Evaluation phase | Time per step, completion without help, errors |
-| NFR-SEC-01, NFR-MNT-01 | Inspection | Before the final report | Review checklist |
-
+| NFR-PERF-01, NFR-PERF-02, NFR-AVL-01 | Load test and analysis | Before and during the evaluation | Load test results, hosting usage report |
+| NFR-SEC-01, NFR-SEC-02, NFR-SEC-07, NFR-MNT-01, NFR-MNT-02, NFR-REL-01, NFR-USA-04 | Inspection | Before the final report | Review checklist |
+| NFR-PRV-04 | Demonstration | Before the final report | A deletion done on request |
+ 
 *Guidance: keep one row per requirement group, and make sure no requirement in section 3 is left without a row.*
 
 ## 5 Appendices
