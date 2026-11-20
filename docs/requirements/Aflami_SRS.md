@@ -1,9 +1,9 @@
 # Aflami Software Requirements Specification
- 
+
 ## Document control
- 
+
 This is the requirements document for Aflami, structured after the SRS outline in ISO/IEC/IEEE 29148:2018. Sections 1 to 5 below follow that outline; replace each *Guidance* line with your own text and delete it before you submit.
- 
+
 | Field | Value |
 | --- | --- |
 | Project | Aflami: one platform for a short film's journey, from project to published film page |
@@ -12,9 +12,9 @@ This is the requirements document for Aflami, structured after the SRS outline i
 | Supervisor | Prof. Adeeb Rida Noor |
 | Standard | ISO/IEC/IEEE 29148:2018, Software requirements specification |
 | Version | 0.1, template |
- 
+
 **Requirement IDs.** Every requirement gets an ID that never changes, so diagrams and tests can point to it:
- 
+
 | Prefix | Area | Writer |
 | --- | --- | --- |
 | FR-ACC | Accounts, roles and permissions | Anas |
@@ -24,28 +24,29 @@ This is the requirements document for Aflami, structured after the SRS outline i
 | FR-TSK | Tasks | Abdullah |
 | FR-FILM | Film page and credits | Abdullah |
 | NFR-xxx | Non-functional (SEC, PRV, USA, PERF, REL, MNT) | Anas |
- 
+
 **Every requirement carries the same attributes**, as 29148 asks: ID, statement ("The system shall …"), rationale, priority (Must / Should / Future), source (user story or supervisor), and verification method (Test, Demonstration, Inspection or Analysis).
- 
+
 ## 1 Introduction
- 
+
 ### 1.1 Purpose
- 
+
 This SRS defines what version 1 of Aflami must do. It is the agreement between the team, the supervisor and the committee, and the base for the design in CPIT-498 and the build and tests in CPIT-499.
- 
+
 *Guidance: name the readers and how each one uses this document.*
- 
+
 ### 1.2 Scope
- 
+
 Aflami is an Arabic-first web platform for student and independent short-film makers in Saudi Arabia and their crews. In one place, a team creates its project, casts its members, distributes the tasks and publishes a film page with full credits. Today these steps are spread across WhatsApp, shared drives and social media; Aflami links them into one record, so every person who worked on the film ends up in its credits. The first planned users are student filmmakers and university film clubs.
- 
+
 Aflami has three kinds of user. A **Visitor** has no account and can only watch published film pages. A **Viewer** has an account, which liking or disliking a film (a Should feature) needs. A **Creator** chooses that type at sign-up, or switches from Viewer later, and can create projects, apply to casting calls, join teams and rate films. Inside each project, a Creator is the Owner, a Manager or a Member (section 1.5).
- 
+
 Every feature has one of three levels:
- 
+
 - **Must:** part of version 1; the CPIT-499 build is not finished without it.
 - **Should:** part of version 1 if time allows; built only after every Must feature works.
 - **Future:** not in version 1.
+
 | Area | Must | Should | Future |
 | --- | --- | --- | --- |
 | Accounts | Registration and sign-in; sign out; account type (Viewer or Creator) chosen at sign-up; permission levels Owner, Manager and Member, with the owner choosing managers; notifications inside the site; my projects page; change password using the old password | Profile with past credits and a link to past work; edit my profile; delete my account | Email notifications; reset a forgotten password (needs an email service); sign in with Google or Apple |
@@ -57,13 +58,13 @@ Every feature has one of three levels:
 | Communication | Announcements from the owner; activity log of who approved what, and when | Team chat | — |
 | Interface and platform | Arabic, right to left, on phone and desktop; Arabic and English switch for the interface (team content is never translated); terms of use and privacy policy; help and FAQ | Light and dark theme; admin panel | Landing page; report inappropriate content |
 | AI assistance | — | AI drafts of the roles and casting ad, the tasks, and the film title and description, from the script; a person approves, edits or rejects every draft; every suggestion and its outcome is logged; script consent and privacy before any script is sent | — |
- 
+
 **Success criterion.** Version 1 succeeds when two real filmmaker teams complete the whole journey on Aflami: create the project, build the team, finish the tasks and publish the film page. For each team we report the time per step, whether they completed it without help, and the errors they met.
- 
+
 ### 1.3 Product perspective
- 
+
 Aflami is a new, self-contained web system. Today the same teams use WhatsApp, shared drives and social media for these steps; Aflami keeps the project, the people and their roles in one linked record.
- 
+
 | Interface (29148) | What Aflami needs (draft) |
 | --- | --- |
 | 1.3.1 System interfaces | YouTube embedded player on the film page |
@@ -74,17 +75,18 @@ Aflami is a new, self-contained web system. Today the same teams use WhatsApp, s
 | 1.3.6 Memory constraints | None specific. *Guidance: write "None" if that stays true.* |
 | 1.3.7 Operations | Who deploys, how often the database is backed up, how a release is rolled back |
 | 1.3.8 Site adaptation | Arabic locale and the Asia/Riyadh time zone for dates and deadlines |
- 
+
 ### 1.4 Product functions
- 
+
 1. **Create a project:** the owner adds the idea and the script.
 2. **Build the team:** the owner publishes casting calls, reviews applications and invites known people.
 3. **Distribute the work:** tasks get an owner, a deadline and a status.
 4. **Publish the film page:** the YouTube video and the credits, reviewed by the owner before publishing.
+
 ### 1.5 User characteristics
- 
+
 Every person has one account type. Inside each project, a Creator also has one permission level.
- 
+
 | User class | Who | What they can do | Expected skill |
 | --- | --- | --- | --- |
 | Visitor | Anyone without an account | Watch published film pages | None |
@@ -92,61 +94,155 @@ Every person has one account type. Inside each project, a Creator also has one p
 | Creator | Account of type Creator, chosen at sign-up or switched to later from Viewer | Create projects, apply to casting calls, join teams, and rate films 1 to 5 (not their own team's film) | Basic web use |
 | Owner | Creator who creates the project | Everything, including publishing or hiding the film page and giving or removing manager rights | Basic web use |
 | Manager | Member chosen by the owner; a project can have several | Everything except publishing and managing permissions: accept applicants, invite people, manage tasks, approve credits | Basic web use |
-| Member | Accepted team member | See the project, update the tasks they own | Basic web use |
+| Member | Accepted team member | See the project, update the tasks they own; a member with the Screenwriter film role can also upload a new script | Basic web use |
 | Applicant | Creator who applies to a casting call | See only their own application until accepted | Basic web use |
- 
+
 *Decided in week 11: the second level is called Manager, so it never clashes with film roles such as Director or Producer. Decided in week 12: three account types, Visitor, Viewer and Creator; only Creators apply to casting calls and join teams.*
- 
+
 ### 1.6 Limitations
- 
+
 - Two developers and one semester (CPIT-499) to build and test.
 - Free hosting tiers, with their limits on requests and database size.
 - Video playback depends on YouTube; Aflami stores links, not video files.
+
 ### 1.7 Assumptions and dependencies
- 
+
 - YouTube embedding stays available for public and unlisted videos.
 - Two student teams agree to take part in the evaluation.
 - *Guidance: add each assumption whose failure would change a requirement.*
+
 ### 1.8 Apportioning of requirements
- 
+
 Each requirement in section 3 takes the level of its feature in section 1.2: Must, Should or Future. CPIT-499 builds every Must requirement first, one area per iteration, then the Should requirements in the order the team agrees. Future requirements are listed for completeness and are not built or tested in version 1.
- 
+
 ## 2 References
- 
+
 1. ISO/IEC/IEEE 29148:2018, *Systems and software engineering — Life cycle processes — Requirements engineering*.
 2. Aflami project proposal, CPIT-498, revised version.
 3. Aflami MVP journey document.
 4. Aflami first presentation, November 2026.
 5. [Aflami Software Design Document](../design/Aflami_SDD.md).
+
 *Guidance: list every document this SRS depends on, with its version and date.*
- 
+
 ## 3 Specific requirements
- 
+
 Each requirement below uses the attributes from Document control. The rows marked *starter* come from the design so far; keep, edit or delete them.
- 
+
 ### 3.1 External interfaces
- 
+
 - **YouTube link:** the owner pastes a public or unlisted YouTube link; the system checks it is a YouTube video link before saving.
 - *Guidance: for each input and output, give its source or destination, valid range and format.*
+
 ### 3.2 Functions
- 
+
 Functions are written three ways that point to each other: user stories (what people want), use cases (how the interaction runs) and requirements (what the system shall do, one testable sentence each).
- 
-**User story format, with one example:**
- 
-> **US-CST-02.** As an owner, I want to accept or reject each applicant, so that only the people I choose join my project.
->
-> Acceptance criteria:
->
-> - Given an application in Submitted, when the owner accepts it, then it becomes Accepted and the applicant becomes a member with the call's film role.
-> - Given an applicant who is already a member, when accepted for a second call, then no second membership is made and the new film role is added.
-> - Given a member without manager rights, when they try to accept, then the system refuses.
- 
+
+**User stories.** Every Must feature in section 1.2 is covered by one or more of the 35 stories below. Each is written as "As a …, I want …, so that …", with acceptance criteria in the form "Given …, when …, then …". Should features get their stories before they are built. The story map shows all of them by area.
+
+![Aflami user story map](../../design/exports/Aflami_User_Story_Map.png)
+
+Source: `design/diagrams/Aflami_User_Story_Map.drawio`.
+
+#### Accounts (US-ACC, written by Anas)
+
+**US-ACC-01 Register and choose Viewer or Creator.** As a new user, I want to create an account and choose Viewer or Creator, so that I can use Aflami the way I need.
+
+- Given the sign-up form, when I enter a name, an email, a password and an account type and accept the terms, then my account is created and I am signed in.
+- Given an email that already has an account, when I try to register with it, then the system refuses and says the email is taken.
+- Given I have not accepted the terms of use and privacy policy, when I submit, then no account is created.
+- *Related: UC-01, FR-ACC-01, NFR-PRV-03.*
+
+**US-ACC-02 Sign in and sign out.** As a registered user, I want to sign in and sign out, so that only I can use my account.
+
+- Given a correct email and password, when I sign in, then I am signed in and see my first screen.
+- Given a wrong password, when I sign in, then the system refuses without saying whether the email has an account.
+- Given I am signed in, when I sign out, then pages that need an account do not open until I sign in again.
+- *Related: UC-01.*
+
+**US-ACC-03 Switch from Viewer to Creator.** As a Viewer, I want to become a Creator, so that I can start projects and apply to casting calls.
+
+- Given a Viewer account, when I choose to become a Creator in my settings, then my account type changes to Creator.
+- Given a Viewer, when I try to apply to a casting call or create a project, then the system asks me to switch to Creator first.
+
+**US-ACC-04 Change password with the current one.** As a user, I want to change my password by entering my current one, so that I can keep my account safe without an email service.
+
+- Given the correct current password and a new password typed twice, when I save, then the new password works from my next sign-in.
+- Given a wrong current password, when I save, then nothing changes.
+- *Related: NFR-SEC-03.*
+
+**US-ACC-05 Give or remove manager rights.** As an owner, I want to make a member a manager, or remove that right, so that trusted people can run the project with me.
+
+- Given an active member, when the owner makes them a manager, then they can accept applicants, invite people, manage tasks and approve credits.
+- Given a project with one manager, when the owner makes a second member a manager, then both keep manager rights.
+- Given a manager, when they try to give manager rights or publish the film page, then the system refuses.
+- *Related: UC-03, FR-ACC-03.*
+
+**US-ACC-06 Permission check on every action.** As a project member, I want every action checked against my permission, so that no one outside the project sees or changes our work.
+
+- Given a user with no active membership, when they open a project's script, tasks or applications, then the system refuses.
+- Given a member who has left, when they open the project, then its private content no longer opens.
+- *Related: FR-ACC-02, NFR-PRV-01.*
+
+**US-ACC-07 Notifications inside Aflami.** As a user, I want notifications inside Aflami for invitations, application results, new tasks and announcements, so that I don't miss what needs me.
+
+- Given I am invited to a project, when I open Aflami, then I see a new notification that links to the invitation.
+- Given an unread notification, when I open it, then it is marked as read.
+- *Related: FR-TEAM-02.*
+
+**US-ACC-08 Language setting on every device.** As a user, I want to choose Arabic or English once, so that Aflami shows my language on any device.
+
+- Given I switch the language to English, when I sign in on another device, then Aflami shows in English.
+- Given I switch the language, when I open a project, then menus and buttons change but what the team wrote stays as written.
+- Given a visitor without an account, when they switch the language, then the choice is kept in their browser.
+- *Related: NFR-USA-03, NFR-USA-04.*
+
+**US-ACC-09 Terms, privacy and help pages.** As a visitor, I want to read the terms of use, the privacy policy and a help page, so that I know how Aflami works and uses my data.
+
+- Given any page, when I open the links at the bottom, then the terms, privacy policy and help pages open without an account.
+- Given the sign-up form, when I read it, then links to the terms and the privacy policy are shown before I accept them.
+- *Related: NFR-PRV-03.*
+
+#### Projects (US-PRJ, written by Anas)
+
+**US-PRJ-01 Create a project with its script.** As a Creator, I want to create a project with a title, an idea and the script, so that my team works from one place.
+
+- Given a Creator, when they create a project with a title and an idea, then they become its owner and the project starts as a draft film.
+- Given a script in PDF, Word (.docx), Pages or plain text up to 10 MB, when the owner uploads it, then only the project's members can open it.
+- Given a file of another type or over 10 MB, when it is uploaded, then the system refuses and says why.
+- *Related: UC-02, FR-PRJ-01, FR-PRJ-02, NFR-SEC-04.*
+
+**US-PRJ-02 Replace the script with a new version.** As an owner, a manager or the project's screenwriter, I want a new script upload to replace the old one, so that the team always reads the newest version.
+
+- Given a project with a script, when the owner, a manager or a member with the Screenwriter film role uploads a new one, then the old file is deleted and members see only the new one.
+- Given a member without manager rights or the Screenwriter film role, when they try to upload a script, then the system refuses.
+- *Related: FR-PRJ-02, FR-PRJ-04.*
+
+**US-PRJ-03 Edit project details.** As an owner or manager, I want to edit the project's title and idea, so that the project stays accurate.
+
+- Given an owner or a manager, when they save new details, then members see the change.
+- Given a member without manager rights, when they try to edit the details, then the system refuses.
+
+**US-PRJ-04 My projects page.** As a Creator, I want to see the projects I own or belong to, so that I can open any of them quickly.
+
+- Given I own one project and belong to another, when I open My projects, then both appear with my permission in each.
+- Given a project I have left, when I open My projects, then it no longer appears.
+
+**US-PRJ-05 Activity log of approvals.** As an owner or manager, I want a log of who approved what and when, so that the project's decisions stay clear later.
+
+- Given a manager accepts an applicant or approves the credits, when the owner or a manager opens the activity log, then it shows who did it and when.
+- Given a member without manager rights, when they try to open the activity log, then the system refuses.
+- Given an entry in the log, when anyone tries to edit or delete it, then the system refuses.
+
+#### Casting, team, tasks and film page (written by Abdullah)
+
+*Abdullah's stories (US-CST, US-TEAM, US-TSK, US-FILM) follow in his commit.*
+
 **Use cases to write:**
- 
+
 | ID | Use case | Primary actor | Writer |
 | --- | --- | --- | --- |
-| UC-01 | Register and sign in | Any user | Anas |
+| UC-01 | Register (choose Viewer or Creator) and sign in | Any user | Anas |
 | UC-02 | Create a project and add the script | Owner | Anas |
 | UC-03 | Give a member manager rights | Owner | Anas |
 | UC-04 | Publish a casting call | Owner, Manager | Abdullah |
@@ -158,11 +254,11 @@ Functions are written three ways that point to each other: user stories (what pe
 | UC-10 | Review and approve the credits | Owner, Manager | Abdullah |
 | UC-11 | Publish the film page | Owner | Abdullah |
 | UC-12 | Watch a film page | Viewer | Abdullah |
- 
+
 **Use case diagram:** *Guidance: one UML use case diagram with the five actors from section 1.5 and UC-01 to UC-12, placed here. Every other diagram is in the [Aflami Software Design Document](../design/Aflami_SDD.md).*
- 
+
 **Use case format, with one example:**
- 
+
 > **UC-06 Review an application.** Primary actor: Owner or Manager. Preconditions: signed in; the application is Submitted.
 >
 > Main flow:
@@ -174,9 +270,9 @@ Functions are written three ways that point to each other: user stories (what pe
 > 5. The system shows the new member in the team.
 >
 > Alternative flow 3a: the actor chooses Reject; the system marks it Rejected and the applicant sees the result. Exception: the actor is not the owner or a manager; the system refuses and changes nothing. Postcondition: the applicant is a member of this project only. Related: FR-CST-02, FR-ACC-02.
- 
+
 **Functional requirements (starter):**
- 
+
 | ID | Requirement | Priority | Source | Verification |
 | --- | --- | --- | --- | --- |
 | FR-ACC-01 | The system shall let a person register with a name, email and password. | Must | UC-01 | Test |
@@ -185,6 +281,7 @@ Functions are written three ways that point to each other: user stories (what pe
 | FR-PRJ-01 | The system shall let a signed-in user create a project with a title, idea and script. | Must | UC-02 | Test |
 | FR-PRJ-02 | The system shall take the script as a PDF, Word (.docx), Pages or plain-text file, show it only to project members, and keep only the newest version (one script per episode; a film has one). | Must | Week 11 decision | Test |
 | FR-PRJ-03 | The system shall let the owner make a project a film or a series; a series holds episodes numbered within each season. | Should | Week 12 decision | Test |
+| FR-PRJ-04 | Only the owner, a manager or a member with the Screenwriter film role shall upload a new script. | Must | Week 12 decision, US-PRJ-02 | Test |
 | FR-CST-01 | The system shall let the owner or a manager publish a casting call with a film role, description and deadline. | Must | UC-04 | Test |
 | FR-CST-02 | The system shall create a membership for the applicant when the owner or a manager accepts an application. | Must | US-CST-02, UC-06 | Test |
 | FR-TEAM-01 | The system shall let one member hold more than one film role in a project. | Must | Table review scenario | Test |
@@ -194,7 +291,7 @@ Functions are written three ways that point to each other: user stories (what pe
 | FR-FILM-01 | The system shall propose credits from the team's film roles and let the owner or a manager edit and approve them before publishing. | Must | UC-10 | Demonstration |
 | FR-FILM-02 | The system shall show a published film page to viewers without an account. | Must | UC-12 | Test |
 | FR-FILM-03 | Only the owner shall publish the film page. | Must | Week 11 decision, UC-11 | Test |
- 
+
 ### 3.3 Usability requirements
  
 | ID | Requirement | Priority | Source | Verification |
@@ -223,18 +320,23 @@ Functions are written three ways that point to each other: user stories (what pe
 - A member who leaves is marked as left, not deleted, so tasks and credits keep their history.
 - Only members of a project can read its script, tasks, attachments and announcements; only the owner and managers can read its applications.
 - Retention: applicant photos of people who were not accepted are deleted 30 days after the call closes; files uploaded but never attached to a record are deleted after 1 day; read notifications are deleted after 90 days; the files of a deleted project or account are deleted with it. A scheduled job applies these rules once a day.
+
+
 ### 3.6 Design constraints
- 
+
 - Web front end in Next.js, React and TypeScript; back end in NestJS; database in PostgreSQL.
 - Hosting on Vercel; build and tests through GitHub Actions.
 - The database and the files are hosted on Supabase (free plan). The back end connects through Supabase's connection pooler in transaction mode, because Vercel cannot use Supabase's direct connection, which is IPv6 only.
 - Scheduled jobs (the daily database export and the daily cleanup) run as GitHub Actions workflows. Supabase pauses a free project after one week without activity, so these jobs must also keep the project active.
 - Film videos stay on YouTube and are shown through its embedded player.
 - Version 1 calls no external AI model.
+
+
 ### 3.7 Standards compliance
  
 - ISO/IEC/IEEE 29148:2018 for this document.
 - Saudi Personal Data Protection Law: Aflami collects only the personal data it needs, explains why in its privacy policy, and lets users ask for their data to be corrected or deleted (NFR-PRV-03, NFR-PRV-04).
+
 ### 3.8 Software system attributes
  
 | ID | Attribute | Requirement | Priority | Verification |
@@ -257,15 +359,15 @@ Functions are written three ways that point to each other: user stories (what pe
 | NFR-MNT-01 | Maintainability | Automated tests shall run on every pull request before merge. | Must | Inspection |
 | NFR-MNT-02 | Maintainability | Each feature area (Accounts and roles, Projects and scripts, Casting and team, Approvals, Tasks, Film page and credits) shall be a separate back-end module. | Must | Inspection |
 | NFR-PRT-01 | Portability | The system shall work on current Chrome, Safari, Firefox and Edge, on desktop and on Android and iOS phones. | Must | Test |
- 
+
 ### 3.9 Supporting information
- 
+
 *Guidance: point to the wireframes, the glossary and any sample data that helps a reader understand the requirements.*
- 
+
 ## 4 Verification
- 
+
 Every requirement in section 3 is checked in CPIT-499 by one of four methods: **Test** (run with set inputs and an expected result), **Demonstration** (shown working), **Inspection** (code or configuration reviewed) or **Analysis** (worked out from data or a model).
- 
+
 | Requirements | Method | When | Evidence |
 | --- | --- | --- | --- |
 | FR-ACC-02, NFR-PRV-01, NFR-PRV-05, NFR-SEC-05 | Test: automated permission tests | Every pull request | Test report in GitHub Actions |
@@ -279,11 +381,11 @@ Every requirement in section 3 is checked in CPIT-499 by one of four methods: **
 | NFR-PRV-04 | Demonstration | Before the final report | A deletion done on request |
  
 *Guidance: keep one row per requirement group, and make sure no requirement in section 3 is left without a row.*
- 
+
 ## 5 Appendices
- 
+
 ### 5.1 Acronyms and abbreviations
- 
+
 | Term | Meaning |
 | --- | --- |
 | SRS | Software requirements specification |
@@ -292,14 +394,13 @@ Every requirement in section 3 is checked in CPIT-499 by one of four methods: **
 | FR / NFR | Functional / non-functional requirement |
 | US / UC | User story / use case |
 | CI | Continuous integration: tests that run on every pull request |
- 
+
 ### 5.2 Traceability matrix
- 
+
 This matrix ties every requirement to its story, use case, diagrams and test, so each diagram can be checked against the requirements.
- 
+
 | Requirement | User story | Use case | Diagrams | Test |
 | --- | --- | --- | --- | --- |
 | FR-CST-02 | US-CST-02 | UC-06 | Sequence: accept an applicant; State: application; ERD: applications, memberships | Integration test: accept creates one membership |
- 
+
 *Guidance: add one row per requirement as you write the diagrams in week 13.*
- 
