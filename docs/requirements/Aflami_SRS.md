@@ -368,7 +368,7 @@ Source: `design/diagrams/Aflami_User_Story_Map.drawio`.
 - Given a Viewer, or a member of the film's team, when they try to rate, then the system refuses.
 - *Related: UC-14.*
 
-**Use cases to write:**
+**Use cases.** Sixteen main use cases, plus six supporting use cases that the main ones include or that extend them. UC-14 Rate a film also extends UC-12 Watch a film page.
 
 | ID | Use case | Primary actor | Writer |
 | --- | --- | --- | --- |
@@ -387,22 +387,83 @@ Source: `design/diagrams/Aflami_User_Story_Map.drawio`.
 | UC-13 | Respond to an invitation | Invited Creator | Abdullah |
 | UC-14 | Rate a film | Creator | Abdullah |
 | UC-15 | Hide or show the film page | Owner | Abdullah |
+| UC-16 | Reopen a done task | Owner, Manager | Abdullah |
 
-**Use case diagram:** *Guidance: one UML use case diagram with the actors from section 1.5 and UC-01 to UC-15, placed here. Every other diagram is in the [Aflami Software Design Document](../design/Aflami_SDD.md).*
+**Supporting use cases:**
 
-**Use case format, with one example:**
+| ID | Use case | Relation | Used by | What it does | Writer |
+| --- | --- | --- | --- | --- | --- |
+| UC-17 | Upload a file | «include» | UC-02, UC-05, UC-18 | Checks the file's type and size (up to 10 MB) and stores it privately | Anas |
+| UC-18 | Attach files to a task | «extend» | UC-09 | Adds images, files or links to a task; includes UC-17 | Abdullah |
+| UC-19 | Shortlist an application | «extend» | UC-06 | Marks a Submitted application as shortlisted; the applicant does not see the mark | Abdullah |
+| UC-20 | Notify a user | «include» | UC-06, UC-07, UC-08 | Creates a notification inside Aflami for the person concerned | Anas |
+| UC-21 | Add a team member | «include» | UC-06, UC-13 | Creates the membership with the film role, or adds the role if the person is already a member | Abdullah |
+| UC-22 | Check permission | «include» | UC-03, UC-04, UC-06, UC-07, UC-08, UC-10, UC-11, UC-15, UC-16 | Reads the user's membership in the project and refuses the action if the permission is too low | Anas |
 
-> **UC-06 Review an application.** Primary actor: Owner or Manager. Preconditions: signed in; the application is Submitted.
+**Use case diagrams.** Three diagrams: an overview of the whole system, then the two most complex areas opened up with their «include» and «extend» relations. Owner, Manager and Member are permissions a Creator holds inside one project; a hollow arrow between actors means "is a kind of".
+
+1. Overview: ![Aflami use case diagram 1, overview](../../design/exports/Aflami_Use_Case_Diagram.png)
+2. Casting and team: ![Aflami use case diagram 2, casting and team](../../design/exports/Aflami_Use_Case_Casting_Team.png)
+3. Tasks, credits and publishing: ![Aflami use case diagram 3, tasks, credits and publishing](../../design/exports/Aflami_Use_Case_Tasks_Credits.png)
+
+Sources: `design/diagrams/Aflami_Use_Case_Diagram.drawio`, `design/diagrams/Aflami_Use_Case_Casting_Team.drawio`, `design/diagrams/Aflami_Use_Case_Tasks_Credits.drawio`.
+
+**Use case descriptions.** Each gives the primary actor, the preconditions, the main flow, the alternative flows and exceptions, the postcondition and the related stories and requirements. The supporting use cases are described in their table above.
+
+#### Accounts and projects (UC-01 to UC-03, written by Anas)
+
+> **UC-01 Register and sign in.** Primary actor: Visitor. Preconditions: Not signed in.
 >
 > Main flow:
 >
-> 1. The actor opens a casting call.
-> 2. The system lists its applications.
-> 3. The actor opens one and chooses Accept.
-> 4. The system marks it Accepted, records who decided and when, and creates the membership with the call's film role.
-> 5. The system shows the new member in the team.
+> 1. The visitor chooses Sign up.
+> 2. The system shows the form: name, email, password and account type (Viewer or Creator), with links to the terms of use and the privacy policy.
+> 3. The visitor fills it in, accepts the terms and submits.
+> 4. The system checks that the email is not taken, creates the account with default settings, and signs the person in.
+> 5. The system shows the first screen: My projects for a Creator, the film pages for a Viewer.
 >
-> Alternative flow 3a: the actor chooses Reject; the system marks it Rejected and the applicant sees the result. Exception: the actor is not the owner or a manager; the system refuses and changes nothing. Postcondition: the applicant is a member of this project only. Related: FR-CST-02, FR-ACC-02.
+> - Alternative flow 1a: the person already has an account and chooses Sign in; they enter the email and password, and the system signs them in.
+> - Exception 3a: the terms are not accepted; no account is created.
+> - Exception 4a: the email already has an account; the system says so and creates nothing.
+> - Exception 1a.1: the password is wrong; the system refuses without saying whether the email has an account.
+>
+> Postcondition: the person has one account with one settings row and is signed in. Related: FR-ACC-01, US-ACC-01, US-ACC-02, NFR-PRV-03, NFR-SEC-01.
+
+> **UC-02 Create a project and add the script.** Primary actor: Creator. Preconditions: Signed in as a Creator.
+>
+> Main flow:
+>
+> 1. The Creator chooses New project.
+> 2. The Creator enters a title and an idea.
+> 3. The system creates the project as a draft film, makes the Creator its owner, and creates the film's single episode.
+> 4. The owner uploads the script.
+> 5. The system checks the file type (PDF, DOCX, Pages or TXT) and size (up to 10 MB), stores it privately, and links it to the episode (UC-17 Upload a file).
+> 6. The system shows the project page.
+>
+> - Alternative flow 4a: the owner adds the script later from the project page.
+> - Exception 1a: the account is a Viewer; the system asks the person to switch to Creator first.
+> - Exception 5a: the file type or size is not allowed; the system refuses and says why.
+>
+> Postcondition: a draft project exists with its owner and, if uploaded, its script. Related: FR-PRJ-01, FR-PRJ-02, US-PRJ-01, NFR-SEC-04.
+
+> **UC-03 Give a member manager rights.** Primary actor: Owner. Preconditions: Signed in; the project has an active member.
+>
+> Main flow:
+>
+> 1. The owner opens the team page.
+> 2. The owner chooses a member and Make manager.
+> 3. The system checks that the actor is the project's owner (UC-22 Check permission).
+> 4. The system changes the member's permission to Manager and records it in the activity log.
+> 5. The team page shows the member as a manager.
+>
+> - Alternative flow 2a: the owner chooses Remove manager rights on a manager; the system makes them a member again.
+> - Exception 3a: the actor is not the owner; the system refuses and changes nothing.
+>
+> Postcondition: the member is a manager; the project still has one owner. Related: FR-ACC-03, US-ACC-05, US-PRJ-05.
+
+#### Casting, team, tasks and film page (UC-04 to UC-16, written by Abdullah)
+
+*Abdullah's use case descriptions follow in his commit.*
 
 **Functional requirements (starter):**
 
