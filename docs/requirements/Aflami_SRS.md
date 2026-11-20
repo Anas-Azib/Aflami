@@ -463,7 +463,194 @@ Sources: `design/diagrams/Aflami_Use_Case_Diagram.drawio`, `design/diagrams/Afla
 
 #### Casting, team, tasks and film page (UC-04 to UC-16, written by Abdullah)
 
-*Abdullah's use case descriptions follow in his commit.*
+> **UC-04 Publish a casting call.** Primary actor: Owner or Manager. Preconditions: Signed in as the project's owner or a manager.
+>
+> Main flow:
+>
+> 1. The actor opens Casting and chooses New call.
+> 2. The actor enters the film role, a description and a deadline.
+> 3. The system checks the actor's permission (UC-22) and that the deadline is in the future.
+> 4. The system saves the call as Open and creates its public link.
+> 5. The actor copies the link to share it.
+>
+> - Alternative flow 1a: the actor edits an open call; the same link shows the new details.
+> - Alternative flow 1b: the actor closes an open call; it stops taking applications and the Submitted ones stay for review.
+> - Exception 3a: the actor is a member without manager rights; the system refuses.
+>
+> Postcondition: an open call with a public link. Related: FR-CST-01, US-CST-01, US-CST-03, US-CST-06.
+
+> **UC-05 Apply to a casting call.** Primary actor: Applicant (a Creator). Preconditions: The call is open.
+>
+> Main flow:
+>
+> 1. The applicant opens the call's link.
+> 2. The system shows the film role, the description and the deadline.
+> 3. The applicant chooses Apply and writes a message, optionally adding a link to past work and a photo.
+> 4. The system checks that the call is still open and that this person has not applied to it before.
+> 5. The system saves the application as Submitted and confirms it; a photo goes through UC-17 Upload a file.
+>
+> - Alternative flow 3a: the person is not signed in as a Creator; the system asks them to sign in or register as a Creator, then returns to the call.
+> - Exception 4a: the person already applied, or the call is closed; the system refuses.
+> - Exception 4b: the photo's type or size is not allowed; the system refuses and says why.
+>
+> Postcondition: one Submitted application for this person and call. Related: US-CST-03, US-CST-04, NFR-PRV-02.
+
+> **UC-06 Review an application.** Primary actor: Owner or Manager. Preconditions: Signed in; the application is Submitted.
+>
+> Main flow:
+>
+> 1. The actor opens a casting call.
+> 2. The system lists its applications.
+> 3. The actor opens one and chooses Accept.
+> 4. The system marks it Accepted, records who decided and when, and adds the applicant to the team with the call's film role (UC-21 Add a team member).
+> 5. The system notifies the applicant (UC-20 Notify a user) and shows the new member in the team.
+>
+> - Alternative flow 3a: the actor chooses Reject; the system marks it Rejected and notifies the applicant.
+> - Alternative flow 3b: the actor shortlists it (UC-19, which extends this use case); it stays Submitted and the applicant does not see the mark.
+> - Alternative flow 4a: the applicant is already a member; the system adds the new film role instead of a second membership.
+> - Exception: the actor is not the owner or a manager (UC-22); the system refuses and changes nothing.
+>
+> Postcondition: the applicant is a member of this project only. Related: FR-CST-02, FR-ACC-02, US-CST-02, US-CST-05.
+
+> **UC-07 Invite a known person.** Primary actor: Owner or Manager. Preconditions: Signed in as the project's owner or a manager.
+>
+> Main flow:
+>
+> 1. The actor opens the team page and chooses Invite.
+> 2. The actor enters the person's email and a film role.
+> 3. The system checks the actor's permission (UC-22) and finds the person's Aflami account.
+> 4. The system creates a Pending invitation and notifies the person inside Aflami (UC-20).
+>
+> - Exception 3a: no Aflami account has that email; the system says the person must register first and sends nothing.
+> - Exception 3b: the person is already an active member; the system says so.
+>
+> Postcondition: a Pending invitation. Related: FR-TEAM-02, US-TEAM-01, US-ACC-07.
+
+> **UC-08 Create and assign a task.** Primary actor: Owner or Manager. Preconditions: Signed in; the project has active members.
+>
+> Main flow:
+>
+> 1. The actor opens Tasks and chooses New task.
+> 2. The actor enters a title, a description and a deadline.
+> 3. The actor chooses an active member as the task's owner.
+> 4. The system checks the actor's permission (UC-22), saves the task as To do, and notifies the member (UC-20).
+> 5. The task appears in the list.
+>
+> - Alternative flow 3a: the actor leaves the task without an owner and assigns it later.
+> - Exception 4a: the actor is a member without manager rights; the system refuses.
+>
+> Postcondition: a To do task, with or without an owner. Related: US-TSK-01, FR-ACC-02.
+
+> **UC-09 Update a task's status.** Primary actor: Task owner (a Member). Preconditions: Signed in; the task is assigned to this member.
+>
+> Main flow:
+>
+> 1. The member opens the task.
+> 2. The member chooses Start; the system checks they own the task and moves it to In progress.
+> 3. The member chooses Finish; the system moves it to Done.
+>
+> - Alternative flow 2a: the member attaches images, files or links (UC-18, which extends this use case).
+> - Alternative flow 3a: after Done, the owner or a manager can reopen the task (UC-16).
+> - Exception: the actor does not own the task; the system refuses.
+>
+> Postcondition: the task shows its new status to the team. Related: FR-TSK-01, FR-TSK-02, US-TSK-02, US-TSK-03, US-TSK-04.
+
+> **UC-10 Review and approve the credits.** Primary actor: Owner or Manager. Preconditions: Signed in; team members have film roles.
+>
+> Main flow:
+>
+> 1. The actor opens Credits.
+> 2. The system proposes one credit for each member's film role, with character names, as Proposed.
+> 3. The actor edits any credit that needs it.
+> 4. The actor approves the credits; the system checks the actor's permission (UC-22).
+> 5. The system marks them Approved, records who approved them, and adds the approval to the activity log.
+>
+> - Alternative flow 3a: the actor removes a proposed credit.
+> - Exception: the actor is a member without manager rights; the system refuses.
+>
+> Postcondition: every credit to publish is Approved. Related: FR-FILM-01, US-FILM-01, US-TEAM-04, US-PRJ-05.
+
+> **UC-11 Publish the film page.** Primary actor: Owner. Preconditions: Signed in; the project is a draft.
+>
+> Main flow:
+>
+> 1. The owner opens the film page settings.
+> 2. The owner adds or checks the synopsis, the details and the YouTube link.
+> 3. The owner chooses Publish.
+> 4. The system checks that the actor is the owner (UC-22), that the YouTube link is valid and that the credits are approved.
+> 5. The system marks the project Published and the page becomes public.
+>
+> - Exception 4a: the YouTube link is missing or the credits are not approved; the system says what is missing.
+> - Exception 4b: a manager tries to publish; the system refuses.
+>
+> Postcondition: a public film page. Related: FR-FILM-03, US-FILM-02, US-FILM-03.
+
+> **UC-12 Watch a film page.** Primary actor: Visitor or Viewer. Preconditions: The page is published.
+>
+> Main flow:
+>
+> 1. The person opens the film page's link.
+> 2. The system shows the video in the YouTube player, the synopsis, the details, the approved credits and the average rating.
+> 3. The person plays the video.
+>
+> - Exception 1a: the page is a draft or hidden; the system says it is not available.
+>
+> Postcondition: nothing changes. Related: FR-FILM-02, US-FILM-05, NFR-PRV-02.
+
+> **UC-13 Respond to an invitation.** Primary actor: Invited Creator. Preconditions: Signed in; the invitation is Pending.
+>
+> Main flow:
+>
+> 1. The Creator opens the invitation's notification.
+> 2. The system shows the project, the film role and who invited them.
+> 3. The Creator chooses Accept.
+> 4. The system marks it Accepted and adds the Creator to the team with the film role (UC-21 Add a team member).
+>
+> - Alternative flow 3a: the Creator chooses Decline; the system marks it Declined and the inviter sees it.
+>
+> Postcondition: the Creator is an active member, or the invitation is Declined. Related: FR-TEAM-02, US-TEAM-02.
+
+> **UC-14 Rate a film.** Primary actor: Creator. Preconditions: Signed in as a Creator; the page is published.
+>
+> Main flow:
+>
+> 1. The Creator opens the film page.
+> 2. The Creator chooses 1 to 5 stars.
+> 3. The system checks that the Creator is not in the film's team.
+> 4. The system saves the rating, replacing their earlier one if any.
+> 5. The page shows the new average and count.
+>
+> - Exception 3a: the person is a Viewer; the system asks them to switch to Creator.
+> - Exception 3b: the Creator is in the film's team; the system refuses.
+>
+> Postcondition: one rating per Creator for this film. Related: US-FILM-06.
+
+> **UC-15 Hide or show the film page.** Primary actor: Owner. Preconditions: Signed in; the page is published.
+>
+> Main flow:
+>
+> 1. The owner opens the film page settings.
+> 2. The owner chooses Hide.
+> 3. The system checks that the actor is the owner and marks the page Hidden.
+> 4. Visitors can no longer open it; the team still can.
+>
+> - Alternative flow 2a: the page is hidden and the owner chooses Show; the page is public again with its ratings kept.
+> - Exception 3a: a manager tries to hide or show the page; the system refuses.
+>
+> Postcondition: the page is Hidden, or Published again. Related: US-FILM-04.
+
+> **UC-16 Reopen a done task.** Primary actor: Owner or Manager. Preconditions: Signed in as the project's owner or a manager; the task is Done.
+>
+> Main flow:
+>
+> 1. The actor opens a Done task.
+> 2. The actor chooses Reopen.
+> 3. The system checks the actor's permission (UC-22).
+> 4. The system moves the task back to In progress and keeps its owner.
+>
+> - Exception 3a: the actor is a member without manager rights, even the task's own owner; the system refuses.
+>
+> Postcondition: the task is In progress again. Related: FR-TSK-02, US-TSK-03.
 
 **Functional requirements (starter):**
 
