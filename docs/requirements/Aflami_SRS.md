@@ -234,9 +234,139 @@ Source: `design/diagrams/Aflami_User_Story_Map.drawio`.
 - Given a member without manager rights, when they try to open the activity log, then the system refuses.
 - Given an entry in the log, when anyone tries to edit or delete it, then the system refuses.
 
-#### Casting, team, tasks and film page (written by Abdullah)
+#### Casting (US-CST, written by Abdullah)
 
-*Abdullah's stories (US-CST, US-TEAM, US-TSK, US-FILM) follow in his commit.*
+**US-CST-01 Publish a casting call.** As an owner or manager, I want to publish a casting call for a film role with a description and a deadline, so that people can apply.
+
+- Given an owner or a manager, when they publish a call with a film role, a description and a deadline, then the call is open and has a public link.
+- Given a member without manager rights, when they try to publish a call, then the system refuses.
+- *Related: UC-04, FR-CST-01.*
+
+**US-CST-02 Accept or reject an applicant.** As an owner, I want to accept or reject each applicant, so that only the people I choose join my project.
+
+- Given an application in Submitted, when the owner accepts it, then it becomes Accepted and the applicant becomes a member with the call's film role.
+- Given an applicant who is already a member, when accepted for a second call, then no second membership is made and the new film role is added.
+- Given a member without manager rights, when they try to accept, then the system refuses.
+- *Related: UC-06, FR-CST-02.*
+
+**US-CST-03 Share a call by public link.** As an owner, I want each casting call to have a public link, so that I can share it on Instagram and LinkedIn.
+
+- Given an open call, when anyone opens its link, then they see the role, the description and the deadline without signing in, and no email addresses.
+- Given someone without a Creator account, when they choose Apply, then they are asked to sign in or register as a Creator first.
+- *Related: NFR-PRV-02.*
+
+**US-CST-04 Apply with a message, link and photo.** As a Creator, I want to apply with a message, and optionally a link to my work and a photo, so that the team can judge me.
+
+- Given an open call, when a Creator sends a message, with or without a link and a photo, then the application is Submitted.
+- Given a Creator who already applied to this call, when they apply again, then the system refuses.
+- Given a closed call, when someone tries to apply, then the system refuses.
+- *Related: UC-05.*
+
+**US-CST-05 Shortlist applicants.** As an owner or manager, I want to shortlist applicants before deciding, so that I can compare the strongest ones.
+
+- Given a Submitted application, when it is shortlisted, then it shows in the shortlist and stays Submitted.
+- Given a shortlisted application, when the applicant views it, then they do not see the shortlist mark.
+
+**US-CST-06 Edit or close a call.** As an owner or manager, I want to edit an open call or close it, so that it stays accurate and stops when the role is filled.
+
+- Given an open call, when it is edited, then its public link shows the new details.
+- Given an open call, when it is closed, then no new applications are accepted and the Submitted ones stay for the team to decide.
+- Given a closed call, when an applicant with a Submitted application views it, then they see that the call is closed and under review.
+
+#### Team (US-TEAM, written by Abdullah)
+
+**US-TEAM-01 Invite a registered user.** As an owner or manager, I want to invite a person who is already on Aflami for a film role, so that I can add people I know without a casting call.
+
+- Given a registered Creator, when they are invited for a film role, then they get a notification inside Aflami and the invitation is Pending.
+- Given an email with no Aflami account, when someone tries to invite it, then the system says the person must register first and sends nothing.
+- *Related: UC-07, FR-TEAM-02.*
+
+**US-TEAM-02 Accept or decline an invitation.** As an invited Creator, I want to accept or decline an invitation, so that I only join teams I choose.
+
+- Given a Pending invitation, when I accept it, then I become an active member with its film role.
+- Given a Pending invitation, when I decline it, then I do not join and the inviter sees Declined.
+- *Related: UC-13, FR-TEAM-02.*
+
+**US-TEAM-03 Team page with film roles.** As a member, I want a team page that shows each member's film roles, so that everyone knows who does what.
+
+- Given a team, when a member opens the team page, then each active member shows with their permission and all their film roles.
+- Given a member who holds two film roles, when the team page opens, then both roles appear.
+- *Related: FR-TEAM-01.*
+
+**US-TEAM-04 Character names for actors.** As an owner or manager, I want to set each actor's character name, so that the credits read "Reem as Noura".
+
+- Given an actor in the team, when their character name is saved, then the team page and the proposed credits show it.
+
+**US-TEAM-05 Announcements to the team.** As an owner or manager, I want to post an announcement with a title and a text, so that the whole team gets the same message.
+
+- Given an owner or a manager, when they post an announcement, then every active member sees it on the project page and gets a notification.
+- Given a member without manager rights, when they try to post an announcement, then the system refuses.
+
+#### Tasks (US-TSK, written by Abdullah)
+
+**US-TSK-01 Create and assign a task.** As an owner or manager, I want to create a task with a deadline and assign it to a member, so that everyone knows their work.
+
+- Given an owner or a manager, when they create a task and choose an active member, then the task is To do and the member is notified.
+- Given a person who is not an active member, when choosing who owns a task, then they cannot be chosen.
+- *Related: UC-08.*
+
+**US-TSK-02 Move my task to In progress and Done.** As a task owner, I want to move my task from To do to In progress to Done, so that the team sees progress.
+
+- Given my task in To do, when I start it, then it becomes In progress; when I finish it, then it becomes Done.
+- Given a task I do not own, when I try to change its status, then the system refuses.
+- *Related: UC-09, FR-TSK-01.*
+
+**US-TSK-03 Reopen a done task.** As an owner or manager, I want to reopen a Done task, so that work that needs changes goes back to its owner.
+
+- Given a Done task, when the owner or a manager reopens it, then it returns to In progress.
+- Given the task's owner without manager rights, when they try to reopen it, then the system refuses.
+- *Related: FR-TSK-02.*
+
+**US-TSK-04 Attach files and links to a task.** As a member, I want to attach images, files and links to a task, so that the work and its results stay together.
+
+- Given a task, when a member attaches an image or a file up to 10 MB, or a link, then the team can open it.
+- Given a file over 10 MB or of a type that is not allowed, when it is attached, then the system refuses and says why.
+- *Related: NFR-SEC-04.*
+
+#### Film page (US-FILM, written by Abdullah)
+
+**US-FILM-01 Review and approve the credits.** As an owner or manager, I want the credits proposed from the team's film roles, so that I only review and approve them.
+
+- Given a team with film roles, when the credits are proposed, then each member's name, film role and character name appears as Proposed.
+- Given a proposed credit, when the owner or a manager edits and approves it, then it becomes Approved and records who approved it.
+- Given a member without manager rights, when they try to approve, then the system refuses.
+- *Related: UC-10, FR-FILM-01.*
+
+**US-FILM-02 Add film details and the YouTube link.** As an owner or manager, I want to add the synopsis, the YouTube link, the genre, the duration, the year and the language, so that the film page is complete.
+
+- Given a YouTube link, when it is saved, then the system checks that it is a YouTube video link.
+- Given saved details, when the film page opens, then they appear on it.
+
+**US-FILM-03 Publish the film page.** As an owner, I want to publish the film page when the video and the credits are ready, so that people can watch the film and see who made it.
+
+- Given a YouTube link and approved credits, when the owner publishes, then the page becomes public.
+- Given a missing YouTube link or unapproved credits, when the owner tries to publish, then the system says what is missing.
+- Given a manager, when they try to publish, then the system refuses.
+- *Related: UC-11, FR-FILM-03.*
+
+**US-FILM-04 Hide or show the film page.** As an owner, I want to hide a published film page and show it again, so that I control when people can see it.
+
+- Given a published page, when the owner hides it, then visitors can no longer open it and the team still can.
+- Given a hidden page, when the owner shows it again, then it is public again with its ratings kept.
+- *Related: UC-15.*
+
+**US-FILM-05 Watch without an account.** As a visitor, I want to watch a published film and see its credits without signing up, so that anyone can enjoy and share it.
+
+- Given a published film page, when a visitor opens its link, then the video plays and the credits show.
+- Given a draft or hidden page, when a visitor opens its link, then they see that it is not available.
+- *Related: UC-12, FR-FILM-02.*
+
+**US-FILM-06 Rate a film 1 to 5 stars.** As a Creator, I want to rate a film from 1 to 5 stars, so that good work gets recognised.
+
+- Given a published film, when a Creator outside its team rates it, then the page shows the new average and count.
+- Given a Creator who rated it before, when they rate again, then their rating changes and the count stays the same.
+- Given a Viewer, or a member of the film's team, when they try to rate, then the system refuses.
+- *Related: UC-14.*
 
 **Use cases to write:**
 
@@ -253,9 +383,12 @@ Source: `design/diagrams/Aflami_User_Story_Map.drawio`.
 | UC-09 | Update a task's status | Task owner | Abdullah |
 | UC-10 | Review and approve the credits | Owner, Manager | Abdullah |
 | UC-11 | Publish the film page | Owner | Abdullah |
-| UC-12 | Watch a film page | Viewer | Abdullah |
+| UC-12 | Watch a film page | Visitor or Viewer | Abdullah |
+| UC-13 | Respond to an invitation | Invited Creator | Abdullah |
+| UC-14 | Rate a film | Creator | Abdullah |
+| UC-15 | Hide or show the film page | Owner | Abdullah |
 
-**Use case diagram:** *Guidance: one UML use case diagram with the five actors from section 1.5 and UC-01 to UC-12, placed here. Every other diagram is in the [Aflami Software Design Document](../design/Aflami_SDD.md).*
+**Use case diagram:** *Guidance: one UML use case diagram with the actors from section 1.5 and UC-01 to UC-15, placed here. Every other diagram is in the [Aflami Software Design Document](../design/Aflami_SDD.md).*
 
 **Use case format, with one example:**
 
