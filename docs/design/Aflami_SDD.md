@@ -448,3 +448,12 @@ Seven diagram types make the full set the supervisor asked for; tick each when i
 - [ ] Activity diagram, section 4 (Abdullah, week 13)
 - [ ] State diagrams for application, task and credit, section 5 (Abdullah, week 13)
 - [ ] Sequence diagrams SD-1 to SD-3 (Abdullah) and SD-4 (Anas), section 6 (week 13)
+
+**Before sending to the supervisor, check that the diagrams agree:**
+ 
+- Every actor in the use case diagram is a role in section 1.5 of the SRS.
+- Every class in a sequence diagram, and every method it calls, is in the class diagram.
+- Every state in a state diagram is a value of a status field in the ERD.
+- Every step of the activity diagram matches a use case.
+- Every diagram's "Covers" IDs appear in the SRS traceability matrix (SRS 5.2).
+ 
