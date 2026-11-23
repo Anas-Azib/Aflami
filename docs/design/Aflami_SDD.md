@@ -347,24 +347,28 @@ Sources: `design/diagrams/Aflami_Class_Diagram.drawio`, `design/diagrams/Aflami_
 Covers: FR-ACC-02, FR-ACC-03, FR-CST-01, FR-CST-02, FR-TEAM-02, FR-TSK-01, FR-TSK-02, FR-FILM-01, FR-FILM-03.
  
 ## 4 Main workflow (activity diagram)
- 
-The activity diagram follows one film from the new project to the published page, with a swimlane for each actor: Owner or Manager, Applicant, Member, System, Viewer.
- 
-1. Owner creates the project and adds the script.
-2. Owner or Manager publishes casting calls, and may invite known people.
-3. Applicant applies.
-4. **Decision:** Owner or Manager accepts or rejects. Accepted: the system creates the membership. Rejected: the applicant sees the result.
-5. **Loop** back to step 2 until the team is complete.
-6. Owner or Manager creates tasks and assigns an owner to each.
-7. Members update their tasks. **Loop** until the work is done.
-8. Owner adds the YouTube link.
-9. System proposes the credits from the team's film roles.
-10. Owner or Manager edits and approves the credits.
-11. Owner publishes the film page; viewers can watch it.
-*Guidance: draw steps 4, 5 and 7 as a decision and two loops, and steps 2 and 6 as work that can run at the same time.*
- 
-Covers: FR-PRJ-01, FR-CST-01, FR-CST-02, FR-TSK-01, FR-FILM-01, FR-FILM-02.
- 
+
+The activity diagram follows one film from the new project to the public page, with a lane for each actor: Applicant or invitee, System, Owner or Manager, Member, Visitor or Viewer.
+
+![Aflami activity diagram: main workflow](../../design/exports/Aflami_Activity_Main_Workflow.jpeg)
+
+Source: `design/diagrams/Aflami_Activity_Main_Workflow.drawio`.
+
+1. The owner creates the project; the system creates the draft film, makes the creator its owner and adds its episode.
+2. The script is uploaded now or later (UC-02, 4a); the system checks its type and size and stores it privately.
+3. The flow splits, and casting and tasks run at the same time.
+4. Casting: the owner or a manager publishes a casting call, the system opens it with a public link, and applicants apply.
+5. **Decision:** accept or reject. An accepted person joins the team; a rejected applicant is notified. **Loop** until the team is complete.
+6. Tasks: the owner or a manager assigns a task to an active member, who starts and finishes it. **Decision:** the work is accepted, or the task is reopened. **Loop** while there is more work.
+7. When both paths are finished, the owner adds the film details and the YouTube link.
+8. The system proposes the credits in film role order; the owner or a manager edits and approves them.
+9. The owner publishes. **Decision:** if the YouTube link or an approval is missing, the page shows what is missing.
+10. The project and its episode become Published, and anyone can watch the film without signing in.
+
+An invited Creator joins the team the same way as an accepted applicant (UC-07, UC-21), without a casting call.
+
+Covers: FR-PRJ-01, FR-CST-01, FR-CST-02, FR-TSK-01, FR-TSK-02, FR-FILM-01, FR-FILM-02, FR-FILM-03.
+
 ## 5 Record states (state diagrams)
  
 Draw one state machine diagram per record; the supervisor asked for these at minimum: application, task and credit. Each transition says what triggers it and who may trigger it.
@@ -376,6 +380,7 @@ Draw one state machine diagram per record; the supervisor asked for these at min
 | Task | To do | Start (task owner) | In progress | — |
 | Task | In progress | Finish (task owner) | Done | — |
 | Credit | Proposed | Approve (Owner, Manager) | Approved | Records who approved |
+| Credit | Approved | Edit (Owner, Manager) | Proposed | Must be approved again before the page is published |
 | Membership | Active | Leave (member, or Owner) | Left | Their open tasks lose their owner; their credits are flagged for review |
 | Invitation | Pending | Accept or decline (invitee) | Accepted or Declined | Accept creates the membership |
 | Project | Draft | Publish (Owner) | Published | Needs a YouTube link and approved credits |
@@ -387,44 +392,61 @@ Draw one state machine diagram per record; the supervisor asked for these at min
 *Note: the first presentation showed Published as a credit state. In this design, publishing belongs to the project, so slide 11 changes in week 14.*
  
 *Decided in week 12: closing a call leaves Submitted applications as they are, and the owner or a manager can reopen a Done task.*
+
+*Decided in week 13: editing an Approved credit sends it back to Proposed; credits are proposed once, and opening Credits again only adds lines for new members or film roles; a person who left a project and is accepted again has their membership made Active again.*
  
 Covers: FR-CST-02, FR-TSK-01, FR-FILM-01, FR-FILM-02.
  
 ## 6 Key scenarios (sequence diagrams)
  
-Four scenarios only, as the supervisor asked: the three flows that make Aflami different, plus the permission check that guards them all.
+Four scenarios only, as the supervisor asked: the three flows that make Aflami different, plus the permission check that guards them all. Each diagram uses the class and method names of section 3 and shows the refusal path as an `alt` fragment. Words in quotes are values whose exact names are set in the code: the actions passed to `PermissionGuard.canAct` ("accept", "create task", "update task", "reopen task", "credits", "approve credits", "edit film page", "publish") and the notification types ("accepted", "task assigned").
  
 ### SD-1 Accept an applicant (Abdullah)
- 
-Participants: Owner, Web app, ApplicationService, PermissionGuard, MembershipService, Database.
- 
-1. Owner chooses Accept on an application.
-2. PermissionGuard checks that the Owner may decide in this project.
-3. ApplicationService marks it Accepted and records who decided and when.
-4. MembershipService creates the membership, or adds the film role if the applicant is already a member.
-5. Web app shows the new member in the team.
+
+![Aflami sequence diagram SD-1: accept an applicant](../../design/exports/Aflami_Sequence_SD1_Accept_Applicant.jpeg)
+
+Source: `design/diagrams/Aflami_Sequence_SD1_Accept_Applicant.drawio`.
+
+Participants: Owner or Manager, Web app, PermissionGuard, ApplicationService, MembershipService, ActivityLogService, NotificationService, Database.
+
+1. The owner or a manager chooses Accept, and the web app calls `ApplicationService.accept(app, actor)`.
+2. `PermissionGuard.canAct` checks the action "accept". If it is refused, or the application is no longer Submitted, nothing changes.
+3. In one transaction, the application becomes Accepted with who decided and when, and `MembershipService.addMember` adds the person: a new membership; a new film role for someone already active; or, for someone who left the project before, the same membership made Active again. The activity log records the decision.
+4. `NotificationService.notify` tells the applicant, and the web app shows the new member in the team.
+
 Covers: FR-CST-02, FR-TEAM-01, FR-ACC-02.
- 
+
 ### SD-2 Assign a task and update it (Abdullah)
- 
-Participants: Manager, Member, Web app, TaskService, PermissionGuard, Database.
- 
-1. Manager creates a task and assigns it to a member.
-2. PermissionGuard checks the Manager's rights; TaskService saves the task as To do.
-3. Member moves the task to In progress, then Done.
-4. PermissionGuard checks that this member owns the task before each change.
-Covers: FR-TSK-01, FR-ACC-02.
- 
+
+![Aflami sequence diagram SD-2: assign a task and update it](../../design/exports/Aflami_Sequence_SD2_Assign_Task.jpeg)
+
+Source: `design/diagrams/Aflami_Sequence_SD2_Assign_Task.drawio`.
+
+Participants: Owner or Manager, Member (task owner), Web app, PermissionGuard, TaskService, NotificationService, Database.
+
+1. The owner or a manager opens New task, filters the active members by film role and chooses the owner. `TaskService.create` checks the action "create task" and that the owner is an active member of the project; a refused request saves nothing.
+2. The task is saved as To do, and `NotificationService.notify` tells its owner.
+3. The member starts, then finishes the task (`updateStatus`). `TaskService` checks that this member owns the task and that the status moves one step forward.
+4. The owner or a manager can reopen a Done task (`reopen`), which goes back to In progress with the same owner; a member is refused, even the task's own owner.
+
+Covers: FR-TSK-01, FR-TSK-02, FR-ACC-02.
+
 ### SD-3 Approve the credits and publish the film page (Abdullah)
- 
-Participants: Owner, Web app, CreditService, ProjectService, Database, Viewer, YouTube.
- 
-1. CreditService proposes the credits from the team's film roles.
-2. Owner edits and approves them.
-3. ProjectService checks for a YouTube link and approved credits, then publishes.
-4. A Viewer opens the page; the browser loads the video from YouTube.
-Covers: FR-FILM-01, FR-FILM-02.
- 
+
+![Aflami sequence diagram SD-3: approve the credits and publish the film page](../../design/exports/Aflami_Sequence_SD3_Credits_Publish.jpeg)
+
+Source: `design/diagrams/Aflami_Sequence_SD3_Credits_Publish.drawio`.
+
+Participants: Owner or Manager, Visitor or Viewer, Web app, PermissionGuard, CreditService, ProjectService, ActivityLogService, Database, YouTube player.
+
+1. `CreditService.proposeFromTeam(project, actor)` proposes the credits once, from the active members' film roles, in film role order; opening Credits again only adds lines for new members or film roles.
+2. The owner or a manager edits the credits that need it (an edited Approved credit goes back to Proposed) and approves them; every approval is written to the activity log.
+3. `ProjectService.updateEpisode` saves the film details and the YouTube link, after checking that the link is a YouTube video.
+4. `ProjectService.publish` is allowed for the owner only. `missingForPublish` lists anything missing; otherwise the project and its episode become Published.
+5. Anyone opens the page without signing in: a published page shows the details, the credits, the rating and the YouTube player; a draft or hidden page shows that the film is not available.
+
+Covers: FR-FILM-01, FR-FILM-02, FR-FILM-03, FR-ACC-02, NFR-PRV-02.
+
 ### SD-4 Permission check on any request (Anas)
  
 Participants: User, Web app, API module, PermissionGuard, Database.
@@ -435,7 +457,6 @@ Participants: User, Web app, API module, PermissionGuard, Database.
 4. Otherwise the module handles the request.
 Covers: FR-ACC-02, NFR-PRV-01.
  
-*Guidance: use the class and method names from section 3, and show the refusal path in each diagram as an alternative fragment.*
  
 ## 7 Diagram checklist and consistency checks
  
@@ -445,15 +466,7 @@ Seven diagram types make the full set the supervisor asked for; tick each when i
 - [x] ERD, section 2 (Anas, week 12)
 - [x] Component and deployment diagrams, section 1 (Anas, week 13)
 - [x] Class diagram, section 3 (Anas, week 13)
-- [ ] Activity diagram, section 4 (Abdullah, week 13)
+- [x] Activity diagram, section 4 (Abdullah, week 13)
 - [ ] State diagrams for application, task and credit, section 5 (Abdullah, week 13)
-- [ ] Sequence diagrams SD-1 to SD-3 (Abdullah) and SD-4 (Anas), section 6 (week 13)
+- [ ] Sequence diagrams SD-1 to SD-3 (Abdullah) and SD-4 (Anas), section 6 (week 13); SD-1 to SD-3 are done, SD-4 is next
 
-**Before sending to the supervisor, check that the diagrams agree:**
- 
-- Every actor in the use case diagram is a role in section 1.5 of the SRS.
-- Every class in a sequence diagram, and every method it calls, is in the class diagram.
-- Every state in a state diagram is a value of a status field in the ERD.
-- Every step of the activity diagram matches a use case.
-- Every diagram's "Covers" IDs appear in the SRS traceability matrix (SRS 5.2).
- 
