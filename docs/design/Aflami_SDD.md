@@ -350,7 +350,7 @@ Covers: FR-ACC-02, FR-ACC-03, FR-CST-01, FR-CST-02, FR-TEAM-02, FR-TSK-01, FR-TS
 
 The activity diagram follows one film from the new project to the public page, with a lane for each actor: Applicant or invitee, System, Owner or Manager, Member, Visitor or Viewer.
 
-![Aflami activity diagram: main workflow](../../design/exports/Aflami_Activity_Main_Workflow.jpeg)
+![Aflami activity diagram: main workflow](../../design/exports/Aflami_Activity_Main_Workflow.png)
 
 Source: `design/diagrams/Aflami_Activity_Main_Workflow.drawio`.
 
@@ -403,7 +403,7 @@ Four scenarios only, as the supervisor asked: the three flows that make Aflami d
  
 ### SD-1 Accept an applicant (Abdullah)
 
-![Aflami sequence diagram SD-1: accept an applicant](../../design/exports/Aflami_Sequence_SD1_Accept_Applicant.jpeg)
+![Aflami sequence diagram SD-1: accept an applicant](../../design/exports/Aflami_Sequence_SD1_Accept_Applicant.png)
 
 Source: `design/diagrams/Aflami_Sequence_SD1_Accept_Applicant.drawio`.
 
@@ -418,7 +418,7 @@ Covers: FR-CST-02, FR-TEAM-01, FR-ACC-02.
 
 ### SD-2 Assign a task and update it (Abdullah)
 
-![Aflami sequence diagram SD-2: assign a task and update it](../../design/exports/Aflami_Sequence_SD2_Assign_Task.jpeg)
+![Aflami sequence diagram SD-2: assign a task and update it](../../design/exports/Aflami_Sequence_SD2_Assign_Task.png)
 
 Source: `design/diagrams/Aflami_Sequence_SD2_Assign_Task.drawio`.
 
@@ -433,7 +433,7 @@ Covers: FR-TSK-01, FR-TSK-02, FR-ACC-02.
 
 ### SD-3 Approve the credits and publish the film page (Abdullah)
 
-![Aflami sequence diagram SD-3: approve the credits and publish the film page](../../design/exports/Aflami_Sequence_SD3_Credits_Publish.jpeg)
+![Aflami sequence diagram SD-3: approve the credits and publish the film page](../../design/exports/Aflami_Sequence_SD3_Credits_Publish.png)
 
 Source: `design/diagrams/Aflami_Sequence_SD3_Credits_Publish.drawio`.
 
