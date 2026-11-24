@@ -299,15 +299,15 @@ Sources: `design/diagrams/Aflami_Class_Diagram.drawio`, `design/diagrams/Aflami_
 | FileService | Shared | uploadLink(type, sizeBytes): UploadLink (checks the type and size, then a signed link for one upload); openLink(key): string (a link that expires) |
 | ActivityLogService | Shared | record(project, actor, action, itemId): ActivityLog |
 | AccountService | Accounts | register(data): User; signIn(email, password): Session; signOut(session): void; changePassword(user, oldPassword, newPassword): void; becomeCreator(user): void; updateSettings(user, data): UserSettings |
-| ProjectService | Projects | create(owner, data): Project (also creates the film's single episode); update(project, data, actor): void; addEpisode(project, data, actor): Episode (series, Should); updateEpisode(episode, data, actor): void (details and YouTube link); publish(project, actor): void; setHidden(project, hidden, actor): void; missingForPublish(project): string[] |
+| ProjectService | Projects | create(owner, data): Project (also creates the film's single episode); update(project, data, actor): void; addEpisode(project, data, actor): Episode (series, Should); updateEpisode(episode, data, actor): void (details and YouTube link); publishEpisode(episode, actor): void (series, Should); publish(project, actor): void; setHidden(project, hidden, actor): void; missingForPublish(project): string[] |
 | ScriptService | Projects | upload(episode, fileKey, actor): Script (replaces the previous script) |
 | CastingService | Casting and team | publishCall(project, data, actor): CastingCall; editCall(call, data, actor): void; closeCall(call, actor): void |
 | ApplicationService | Casting and team | submit(call, applicant, data): Application; shortlist(app, actor): void; unshortlist(app, actor): void; accept(app, actor): Membership; reject(app, actor): void |
 | InvitationService | Casting and team | invite(project, email, filmRole, actor): Invitation; accept(inv, user): Membership; decline(inv, user): void |
-| MembershipService | Casting and team | addMember(project, user, filmRole): Membership; addFilmRole(membership, filmRole, character): MemberRole; setPermission(membership, permission, actor): void; leave(membership): void |
+| MembershipService | Casting and team | addMember(project, user, filmRole): Membership; addFilmRole(membership, filmRole, character): MemberRole; setPermission(membership, permission, actor): void; leave(membership): void (Should) |
 | AnnouncementService | Casting and team | post(project, title, body, actor): Announcement (notifies every active member) |
 | TaskService | Tasks | create(project, data, actor): Task; assign(task, owner, actor): void; updateStatus(task, status, user): void; reopen(task, actor): void; attach(task, fileKeyOrUrl, user): TaskAttachment |
-| CreditService | Film page | proposeFromTeam(project): Credit[] (in the order of the film role list); edit(credit, data, actor): void; approve(credit, actor): void |
+| CreditService | Film page | proposeFromTeam(project, actor): Credit[] (in the order of the film role list); add(project, data, actor): Credit (someone without an Aflami account, Should); edit(credit, data, actor): void; approve(credit, actor): void; remove(credit, actor): void (a Proposed line only) |
 | RatingService | Film page | rate(project, user, stars): Rating; react(project, user, value): Reaction (Should) |
  
 *The use cases' supporting steps map onto these methods: UC-17 Upload a file is `FileService.uploadLink`, after which the browser uploads the file itself, UC-20 Notify a user is `NotificationService.notify`, UC-21 Add a team member is `MembershipService.addMember`, and UC-22 Check permission is `PermissionGuard.canAct`.*
@@ -483,4 +483,6 @@ Seven diagram types make the full set the supervisor asked for; tick each when i
 - [x] Activity diagram, section 4 (Abdullah, week 13)
 - [x] State diagrams: the journey overview, and diagrams 1 to 4 for the team, the tasks, the credits and the project, section 5 (Abdullah, week 13)
 - [ ] Sequence diagrams SD-1 to SD-3 (Abdullah) and SD-4 (Anas), section 6 (week 13); SD-1 to SD-3 are done, SD-4 is next
+
+
 
