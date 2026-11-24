@@ -302,7 +302,7 @@ Sources: `design/diagrams/Aflami_Class_Diagram.drawio`, `design/diagrams/Aflami_
 | ProjectService | Projects | create(owner, data): Project (also creates the film's single episode); update(project, data, actor): void; addEpisode(project, data, actor): Episode (series, Should); updateEpisode(episode, data, actor): void (details and YouTube link); publish(project, actor): void; setHidden(project, hidden, actor): void; missingForPublish(project): string[] |
 | ScriptService | Projects | upload(episode, fileKey, actor): Script (replaces the previous script) |
 | CastingService | Casting and team | publishCall(project, data, actor): CastingCall; editCall(call, data, actor): void; closeCall(call, actor): void |
-| ApplicationService | Casting and team | submit(call, applicant, data): Application; shortlist(app, actor): void; accept(app, actor): Membership; reject(app, actor): void |
+| ApplicationService | Casting and team | submit(call, applicant, data): Application; shortlist(app, actor): void; unshortlist(app, actor): void; accept(app, actor): Membership; reject(app, actor): void |
 | InvitationService | Casting and team | invite(project, email, filmRole, actor): Invitation; accept(inv, user): Membership; decline(inv, user): void |
 | MembershipService | Casting and team | addMember(project, user, filmRole): Membership; addFilmRole(membership, filmRole, character): MemberRole; setPermission(membership, permission, actor): void; leave(membership): void |
 | AnnouncementService | Casting and team | post(project, title, body, actor): Announcement (notifies every active member) |
@@ -371,16 +371,28 @@ Covers: FR-PRJ-01, FR-CST-01, FR-CST-02, FR-TSK-01, FR-TSK-02, FR-FILM-01, FR-FI
 
 ## 5 Record states (state diagrams)
  
-Draw one state machine diagram per record; the supervisor asked for these at minimum: application, task and credit. Each transition says what triggers it and who may trigger it.
+The state diagrams follow the MVP journey: create the project, build the team, distribute the work, publish the film. The overview shows the whole journey on one page and names the detailed diagram for each step; the supervisor asked at minimum for application, task and credit, which diagrams 1 to 3 cover, and diagram 4 adds the project and its film page, because publishing belongs to the project, not to the credits. Each diagram shows the saved status of each record, the order a team usually follows, and every condition, refusal and Should feature on the way; each transition says what triggers it, who may trigger it, its condition and what the system does.
+
+1. Overview, the whole journey: ![Aflami state diagram overview, the whole journey](../../design/exports/Aflami_State_Overview.png)
+2. Diagram 1, building the team (invitations, casting calls and applications): ![Aflami state diagram 1, building the team](../../design/exports/Aflami_State_Application.png)
+3. Diagram 2, distributing the work (one task, and the project's task list until every task is Done): ![Aflami state diagram 2, distributing the work](../../design/exports/Aflami_State_Task.png)
+4. Diagram 3, the credits (one line, and the whole list until every line is Approved): ![Aflami state diagram 3, the credits](../../design/exports/Aflami_State_Credit.png)
+5. Diagram 4, project and film page: ![Aflami state diagram 4, project and film page](../../design/exports/Aflami_State_Project.png)
+
+Sources: `design/diagrams/Aflami_State_Overview.drawio`, `Aflami_State_Application.drawio`, `Aflami_State_Task.drawio`, `Aflami_State_Credit.drawio` and `Aflami_State_Project.drawio`.
+
+Stages such as "Writing the task", "All tasks done" or "All approved" are steps of the journey, not saved values: each diagram says so in grey under the state's name. The table sums up the saved transitions of every record.
  
 | Record | From | Event (who) | To | Effect |
 | --- | --- | --- | --- | --- |
 | Application | Submitted | Accept (Owner, Manager) | Accepted | Creates the membership, or adds the film role if already a member |
 | Application | Submitted | Reject (Owner, Manager) | Rejected | Applicant sees the result |
+| Application | Submitted | Shortlist or unshortlist (Owner, Manager) | Submitted | Only the team sees the mark |
 | Task | To do | Start (task owner) | In progress | — |
 | Task | In progress | Finish (task owner) | Done | — |
 | Credit | Proposed | Approve (Owner, Manager) | Approved | Records who approved |
 | Credit | Approved | Edit (Owner, Manager) | Proposed | Must be approved again before the page is published |
+| Credit | Proposed | Remove (Owner, Manager) | (deleted) | Only a Proposed line can be removed |
 | Membership | Active | Leave (member, or Owner) | Left | Their open tasks lose their owner; their credits are flagged for review |
 | Invitation | Pending | Accept or decline (invitee) | Accepted or Declined | Accept creates the membership |
 | Project | Draft | Publish (Owner) | Published | Needs a YouTube link and approved credits |
@@ -394,8 +406,10 @@ Draw one state machine diagram per record; the supervisor asked for these at min
 *Decided in week 12: closing a call leaves Submitted applications as they are, and the owner or a manager can reopen a Done task.*
 
 *Decided in week 13: editing an Approved credit sends it back to Proposed; credits are proposed once, and opening Credits again only adds lines for new members or film roles; a person who left a project and is accepted again has their membership made Active again.*
+
+*Week 13 review of the state diagrams: submit also checks the call's deadline, because the daily job may close a call some hours after it; a shortlist mark can be removed; a reopened task whose owner has left has no owner until one is assigned; overdue is worked out from the deadline and is not a status.*
  
-Covers: FR-CST-02, FR-TSK-01, FR-FILM-01, FR-FILM-02.
+Covers: FR-PRJ-01, FR-CST-01, FR-CST-02, FR-TEAM-02, FR-TSK-01, FR-TSK-02, FR-FILM-01, FR-FILM-02, FR-FILM-03, NFR-PRV-05, NFR-PRV-06.
  
 ## 6 Key scenarios (sequence diagrams)
  
@@ -467,6 +481,6 @@ Seven diagram types make the full set the supervisor asked for; tick each when i
 - [x] Component and deployment diagrams, section 1 (Anas, week 13)
 - [x] Class diagram, section 3 (Anas, week 13)
 - [x] Activity diagram, section 4 (Abdullah, week 13)
-- [ ] State diagrams for application, task and credit, section 5 (Abdullah, week 13)
+- [x] State diagrams: the journey overview, and diagrams 1 to 4 for the team, the tasks, the credits and the project, section 5 (Abdullah, week 13)
 - [ ] Sequence diagrams SD-1 to SD-3 (Abdullah) and SD-4 (Anas), section 6 (week 13); SD-1 to SD-3 are done, SD-4 is next
 

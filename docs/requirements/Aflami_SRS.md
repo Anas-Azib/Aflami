@@ -266,6 +266,7 @@ Source: `design/diagrams/Aflami_User_Story_Map.drawio`.
 
 - Given a Submitted application, when it is shortlisted, then it shows in the shortlist and stays Submitted.
 - Given a shortlisted application, when the applicant views it, then they do not see the shortlist mark.
+- Given a shortlisted application, when the owner or a manager removes the mark, then it leaves the shortlist and stays Submitted.
 
 **US-CST-06 Edit or close a call.** As an owner or manager, I want to edit an open call or close it, so that it stays accurate and stops when the role is filled.
 
@@ -395,7 +396,7 @@ Source: `design/diagrams/Aflami_User_Story_Map.drawio`.
 | --- | --- | --- | --- | --- | --- |
 | UC-17 | Upload a file | «include» | UC-02, UC-05, UC-18 | Checks the file's type and size (up to 10 MB) and stores it privately | Anas |
 | UC-18 | Attach files to a task | «extend» | UC-09 | Adds images, files or links to a task; includes UC-17 | Abdullah |
-| UC-19 | Shortlist an application | «extend» | UC-06 | Marks a Submitted application as shortlisted; the applicant does not see the mark | Abdullah |
+| UC-19 | Shortlist an application | «extend» | UC-06 | Marks a Submitted application as shortlisted, or removes the mark; the applicant does not see the mark | Abdullah |
 | UC-20 | Notify a user | «include» | UC-06, UC-07, UC-08 | Creates a notification inside Aflami for the person concerned | Anas |
 | UC-21 | Add a team member | «include» | UC-06, UC-13 | Creates the membership with the film role, or adds the role if the person is already a member | Abdullah |
 | UC-22 | Check permission | «include» | UC-03, UC-04, UC-06, UC-07, UC-08, UC-10, UC-11, UC-15, UC-16 | Reads the user's membership in the project and refuses the action if the permission is too low | Anas |
@@ -508,7 +509,7 @@ Sources: `design/diagrams/Aflami_Use_Case_Diagram.drawio`, `design/diagrams/Afla
 > 5. The system notifies the applicant (UC-20 Notify a user) and shows the new member in the team.
 >
 > - Alternative flow 3a: the actor chooses Reject; the system marks it Rejected and notifies the applicant.
-> - Alternative flow 3b: the actor shortlists it (UC-19, which extends this use case); it stays Submitted and the applicant does not see the mark.
+> - Alternative flow 3b: the actor shortlists it, or removes the mark (UC-19, which extends this use case); it stays Submitted and the applicant does not see the mark.
 > - Alternative flow 4a: the applicant is already a member; the system adds the new film role instead of a second membership.
 > - Exception: the actor is not the owner or a manager (UC-22); the system refuses and changes nothing.
 >
