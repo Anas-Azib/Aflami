@@ -7,16 +7,16 @@ This document shows how Aflami version 1 will be built. The [Aflami Software Req
 | Field | Value |
 | --- | --- |
 | Course | CPIT-498 (design), built in CPIT-499 |
-| Authors | Anas Aazib, Abdullah Al-Jadani |
+| Authors | Anas Azib, Abdullah Al-Jadani |
 | Supervisor | Prof. Adeeb Rida Noor |
-| Version | 0.1, template |
+| Version | 0.9, for the supervisor's review (week 13) |
  
-**Rules for every diagram:**
+**How the diagrams are kept:**
  
-- Draw it in one tool (draw.io or PlantUML), keep its source in `design/diagrams/`, export the image to `design/exports/`, and place the image in its section here.
-- Under each diagram, list the requirement IDs it covers (FR-…, NFR-…).
-- Use the same names as the SRS: table names, state names and role names (Owner, Manager, Member, Applicant, Viewer).
-- The content in each section below is *starter* material from the design so far; replace each *Guidance* line with the diagram and delete it before you submit.
+- Every diagram is drawn in draw.io. Its source is in `design/diagrams/`, its image is in `design/exports/`, and the image sits in its section here.
+- Each section ends with the requirement IDs its diagrams cover (Covers: FR-…, NFR-…).
+- The names match the SRS: table names, state names and role names (Owner, Manager, Member, Applicant, Viewer).
+- Section 8 lists the first drafts of the screen designs, kept in `design/wireframes/`.
 
 **Design decisions.** Sections 1, 2 and 3 end with the decisions behind their design, numbered DD-01 to DD-24. Each gives why we chose it, what we did not choose, and the cost we accept, so a reviewer can check the reasoning and the slides can refer to a decision by its number.
 
@@ -507,3 +507,38 @@ Seven diagram types make the full set the supervisor asked for; tick each when i
 - Every event a person triggers in a state diagram is a service method in section 3; an AI draft (Should) is the background job of DD-09, and its approved result is saved through those same methods.
 - Every step of the activity diagram matches a use case.
 - Every diagram's "Covers" IDs appear in the SRS traceability matrix (SRS 5.2).
+
+## 8 Screen designs (first drafts)
+
+These are the first drafts of the main screens, made in week 13 to agree on the look and the flow before CPIT-499. They are drafts: the layouts, the pictures (empty character slots, to be drawn by Anas) and the phone layouts are refined while building. Every screen is Arabic first and right to left, in a dark appearance by default. Red is Aflami's colour; each part of the journey has its own: projects green, casting blue, tasks orange, credits and the film page indigo, the viewer pages yellow, the profile violet.
+
+| # | Screen | Image | Use cases |
+| --- | --- | --- | --- |
+| 1 | Sign in and sign up | [Aflami_UI_01_SignIn.png](../../design/wireframes/Aflami_UI_01_SignIn.png) | UC-01 |
+| 1b | Choosing the account type | [Aflami_UI_01b_AccountType.png](../../design/wireframes/Aflami_UI_01b_AccountType.png) | UC-01 |
+| 2 | My projects | [Aflami_UI_02_Projects.png](../../design/wireframes/Aflami_UI_02_Projects.png) | UC-02 |
+| 3 | New project | [Aflami_UI_03_NewProject.png](../../design/wireframes/Aflami_UI_03_NewProject.png) | UC-02, UC-17 |
+| 4 | Project overview and script | [Aflami_UI_04_Overview.png](../../design/wireframes/Aflami_UI_04_Overview.png) | UC-02, UC-17 |
+| 5 | Team and invitations | [Aflami_UI_05_Team.png](../../design/wireframes/Aflami_UI_05_Team.png) | UC-03, UC-07 |
+| 6 | New casting call | [Aflami_UI_06_NewCall.png](../../design/wireframes/Aflami_UI_06_NewCall.png) | UC-04 |
+| 7 | Public casting call | [Aflami_UI_07_CallPublic.png](../../design/wireframes/Aflami_UI_07_CallPublic.png) | UC-04, UC-05 |
+| 8 | Apply | [Aflami_UI_08_Apply.png](../../design/wireframes/Aflami_UI_08_Apply.png) | UC-05, UC-17 |
+| 9 | Reviewing applications | [Aflami_UI_09_Applications.png](../../design/wireframes/Aflami_UI_09_Applications.png) | UC-06, UC-19, UC-21 |
+| 10 | Tasks | [Aflami_UI_10_Tasks.png](../../design/wireframes/Aflami_UI_10_Tasks.png) | UC-09, UC-16, UC-18 |
+| 11 | New task | [Aflami_UI_11_NewTask.png](../../design/wireframes/Aflami_UI_11_NewTask.png) | UC-08 |
+| 12 | Credits review | [Aflami_UI_12_Credits.png](../../design/wireframes/Aflami_UI_12_Credits.png) | UC-10 |
+| 13 | Film page settings and publishing | [Aflami_UI_13_FilmSettings.png](../../design/wireframes/Aflami_UI_13_FilmSettings.png) | UC-11, UC-15 |
+| 14 | Activity log | [Aflami_UI_14_Activity.png](../../design/wireframes/Aflami_UI_14_Activity.png) | — |
+| 15 | Notifications and invitations | [Aflami_UI_15_Notifications.png](../../design/wireframes/Aflami_UI_15_Notifications.png) | UC-13, UC-20 |
+| 16 | Account settings | [Aflami_UI_16_Settings.png](../../design/wireframes/Aflami_UI_16_Settings.png) | — |
+| 17 | Creator profile (Should) | [Aflami_UI_17_Profile.png](../../design/wireframes/Aflami_UI_17_Profile.png) | — |
+| V1 | Home (viewer side) | [Aflami_UI_V1_Home.png](../../design/wireframes/Aflami_UI_V1_Home.png) | UC-12 |
+| V2 | Film page, overview tab | [Aflami_UI_V2_Film.png](../../design/wireframes/Aflami_UI_V2_Film.png) | UC-12, UC-14 (Should) |
+| V3 | Film page, credits tab | [Aflami_UI_V3_FilmCredits.png](../../design/wireframes/Aflami_UI_V3_FilmCredits.png) | UC-12 |
+| V4 | Home in the light appearance (Should) | [Aflami_UI_V4_HomeLight.png](../../design/wireframes/Aflami_UI_V4_HomeLight.png) | — |
+| V5 | Film page with the English interface | [Aflami_UI_V5_FilmEnglish.png](../../design/wireframes/Aflami_UI_V5_FilmEnglish.png) | UC-12 |
+| S1 | Colours: red, and a colour per section | [Aflami_UI_S1_Colours.png](../../design/wireframes/Aflami_UI_S1_Colours.png) | — |
+
+![Aflami screen design 1b, choosing the account type](../../design/wireframes/Aflami_UI_01b_AccountType.png)
+
+Covers: NFR-USA-01, NFR-USA-03, NFR-USA-04.

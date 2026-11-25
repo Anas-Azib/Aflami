@@ -9,7 +9,7 @@ CPIT-498 (requirements and design) → CPIT-499 (implementation and testing).
 
 | Member | Responsible for |
 | --- | --- |
-| Anas Aazib | Accounts, permissions, database, architecture |
+| Anas Azib | Accounts, permissions, database, architecture |
 | Abdullah Al-Jadani | Casting, team, tasks, film page |
 
 Supervisor: Prof. Adeeb Rida Noor
@@ -52,13 +52,13 @@ In CPIT-499 the code is added under `apps/web` (front end) and `apps/api` (back 
 | --- | --- |
 | Front end | Next.js, React, TypeScript |
 | Back end | NestJS |
-| Database | PostgreSQL |
+| Database and files | PostgreSQL and file storage on Supabase |
 | Film video | YouTube embedded player |
-| Tests and deployment | GitHub Actions, Vercel |
+| Tests, deployment and daily jobs | GitHub Actions, Vercel |
 
 ## How we work
 
 - Each member commits their own work, so the history shows who did what.
 - One branch per task, merged into `main` through a pull request that the other member reviews.
 - Commit messages are short and name the part they touch, for example `docs: add user stories for accounts (FR-ACC)`.
-- Every Wednesday we send the supervisor a short update (done, blocked, next) and save a copy in `docs/plan/updates/`.
+- Every Thursday we send the supervisor a short update (done, delayed, next) and save a copy in `docs/plan/updates/`.

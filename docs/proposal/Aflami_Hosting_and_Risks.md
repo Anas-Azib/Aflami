@@ -1,11 +1,11 @@
 # Aflami hosting plan and risks
 
-This is the hosting and risks part of the revised proposal. It says where Aflami version 1 runs, what each free plan allows, and what could stop the project, with how we prevent it and what we do if it happens. It will be merged into the revised proposal in week 13. The reasons behind the hosting choices are design decisions DD-05 to DD-10 in the [design document](../design/Aflami_SDD.md).
+This is the hosting and risks part of the revised proposal. It says where Aflami version 1 runs, what each free plan allows, and what could stop the project, with how we prevent it and what we do if it happens. The [revised proposal](Aflami_Proposal.md) summarises it in section 7. The reasons behind the hosting choices are design decisions DD-05 to DD-10 in the [design document](../design/Aflami_SDD.md).
 
 | Field | Value |
 | --- | --- |
 | Course | CPIT-498 (design), built in CPIT-499 |
-| Authors | Anas Aazib, Abdullah Al-Jadani |
+| Authors | Anas Azib, Abdullah Al-Jadani |
 | Supervisor | Prof. Adeeb Rida Noor |
 | Checked against | The providers' own pricing and limits pages, November 2026 |
 

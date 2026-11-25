@@ -8,7 +8,7 @@ This is the requirements document for Aflami, structured after the SRS outline i
 | --- | --- |
 | Project | Aflami: one platform for a short film's journey, from project to published film page |
 | Course | CPIT-498 (requirements and design), Faculty of Computing and IT, King Abdulaziz University |
-| Authors | Anas Aazib, Abdullah Al-Jadani |
+| Authors | Anas Azib, Abdullah Al-Jadani |
 | Supervisor | Prof. Adeeb Rida Noor |
 | Standard | ISO/IEC/IEEE 29148:2018, Software requirements specification |
 | Version | 0.9, for the supervisor's review (week 13) |
@@ -58,6 +58,8 @@ Every feature has one of three levels:
 | Communication | Announcements from the owner; activity log of who approved what, and when | Team chat | — |
 | Interface and platform | Arabic, right to left, on phone and desktop; Arabic and English switch for the interface (team content is never translated); terms of use and privacy policy; help and FAQ | Light and dark theme; admin panel | Landing page; report inappropriate content |
 | AI assistance | — | AI drafts of the roles and casting ad, the tasks, and the film title and description, from the script; a person approves, edits or rejects every draft; every suggestion and its outcome is logged; script consent and privacy before any script is sent | — |
+
+*Decided in week 13: the supervisor confirmed that the AI drafts are Should features.*
 
 **Success criterion.** Version 1 succeeds when two real filmmaker teams complete the whole journey on Aflami: create the project, build the team, finish the tasks and publish the film page. For each team we report the time per step, whether they completed it without help, and the errors they met.
 
@@ -153,7 +155,7 @@ Source: `design/diagrams/Aflami_User_Story_Map.drawio`.
 
 **US-ACC-01 Register and choose Viewer or Creator.** As a new user, I want to create an account and choose Viewer or Creator, so that I can use Aflami the way I need.
 
-- Given the sign-up form, when I enter a name, an email, a password and an account type and accept the terms, then my account is created and I am signed in.
+- Given the sign-up form, when I enter a name, an email and a password, accept the terms and then choose Viewer or Creator on the account type screen, then my account is created and I am signed in.
 - Given an email that already has an account, when I try to register with it, then the system refuses and says the email is taken.
 - Given I have not accepted the terms of use and privacy policy, when I submit, then no account is created.
 - *Related: UC-01, FR-ACC-01, NFR-PRV-03.*
@@ -425,14 +427,17 @@ Sources: `design/diagrams/Aflami_Use_Case_Diagram.drawio`, `design/diagrams/Afla
 > Main flow:
 >
 > 1. The visitor chooses Sign up.
-> 2. The system shows the form: name, email, password and account type (Viewer or Creator), with links to the terms of use and the privacy policy.
-> 3. The visitor fills it in, accepts the terms and submits.
-> 4. The system checks that the email is not taken, creates the account with default settings, and signs the person in.
-> 5. The system shows the first screen: My projects for a Creator, the film pages for a Viewer.
+> 2. The system shows the form: name, email and password, with links to the terms of use and the privacy policy.
+> 3. The visitor fills it in, accepts the terms and chooses Next.
+> 4. The system shows the account type screen: two cards, Creator and Viewer, each with a picture and a short description.
+> 5. The visitor chooses one card and chooses Create account.
+> 6. The system checks that the email is not taken, creates the account with default settings, and signs the person in.
+> 7. The system shows the first screen: My projects for a Creator, the film pages for a Viewer.
 >
 > - Alternative flow 1a: the person already has an account and chooses Sign in; they enter the email and password, and the system signs them in.
-> - Exception 3a: the terms are not accepted; no account is created.
-> - Exception 4a: the email already has an account; the system says so and creates nothing.
+> - Exception 3a: the terms are not accepted; Next stays unavailable and no account is created.
+> - Exception 5a: no account type is chosen; Create account stays unavailable.
+> - Exception 6a: the email already has an account; the system says so, returns to the form and creates nothing.
 > - Exception 1a.1: the password is wrong; the system refuses without saying whether the email has an account.
 >
 > Postcondition: the person has one account with one settings row and is signed in. Related: FR-ACC-01, US-ACC-01, US-ACC-02, NFR-PRV-03, NFR-SEC-01.
@@ -476,7 +481,7 @@ Sources: `design/diagrams/Aflami_Use_Case_Diagram.drawio`, `design/diagrams/Afla
 > Main flow:
 >
 > 1. The actor opens Casting and chooses New call.
-> 2. The actor enters the film role, a description and a deadline.
+> 2. The actor chooses the film role from the fixed list of 25 (design document, section 2.1) and enters a description and a deadline.
 > 3. The system checks the actor's permission (UC-22) and that the deadline is in the future.
 > 4. The system saves the call as Open and creates its public link.
 > 5. The actor copies the link to share it.
@@ -525,7 +530,7 @@ Sources: `design/diagrams/Aflami_Use_Case_Diagram.drawio`, `design/diagrams/Afla
 > Main flow:
 >
 > 1. The actor opens the team page and chooses Invite.
-> 2. The actor enters the person's email and a film role.
+> 2. The actor enters the person's email and chooses the film role from the same list of 25.
 > 3. The system checks the actor's permission (UC-22) and finds the person's Aflami account.
 > 4. The system creates a Pending invitation and notifies the person inside Aflami (UC-20).
 >
@@ -754,7 +759,7 @@ Sources: `design/diagrams/Aflami_Use_Case_Diagram.drawio`, `design/diagrams/Afla
 ### 3.9 Supporting information
 
 - The acronyms and terms are in section 5.1, and the film roles, in English and Arabic, in section 2.1 of the design document.
-- The screen designs are added to the design document when they are approved (plan task 25).
+- First drafts of the screen designs are in `design/wireframes/` and design document section 8; they are refined in CPIT-499, with the phone layouts.
 - Tests use Arabic, English and mixed sample data for names, titles, tasks and credits (NFR-USA-05).
 
 ## 4 Verification
