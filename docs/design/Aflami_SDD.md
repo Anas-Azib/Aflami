@@ -115,7 +115,7 @@ Source: `design/diagrams/Aflami_Deployment_Diagram.drawio`.
 
 - *Why:* the export runs `pg_dump`, which a Vercel function cannot run and which may need more than 5 minutes as the data grows; a GitHub Actions runner has it, and has git. The export holds emails and password hashes, so it is encrypted before it leaves the runner and pushed to the private `aflami-backups` repository: outside Supabase, because a backup kept next to the data is lost with it, and outside the public repository. The daily activity also keeps the free Supabase project from pausing.
 - *Not chosen:* Supabase's own backups, which the free plan does not include. Vercel's scheduled jobs, which cannot run `pg_dump`. Google Drive or Cloudflare R2, which add one more account and one more key.
-- *Cost we accept:* in a public repository, GitHub turns scheduled workflows off after 60 days without activity, so someone must keep the repository active over long breaks. The backup key is kept in GitHub's secret settings and also offline by both students, because without it the backups cannot be opened.
+- *Cost we accept:* in a public repository, GitHub turns scheduled workflows off after 60 days without activity, so Anas keeps the repository active over long breaks, with at least one commit a month (R-05). The backup key is kept in GitHub's secret settings and also offline by both students, because without it the backups cannot be opened.
 
 **DD-09 AI drafts run as a background job (Should).**
 
@@ -137,7 +137,7 @@ Covers: FR-ACC-02, NFR-MNT-01, NFR-MNT-02, NFR-PRT-01, NFR-REL-01, NFR-SEC-02, N
 
 ## 2 Data model (ERD)
  
-Eighteen tables hold version 1: seventeen are needed by Must features, and one (reactions) only by a Should feature. The key idea is one chain: an accepted application creates a membership, the membership owns tasks, and it becomes a credit. Every project also has episodes: a film has exactly one, which the site never calls an episode, and a series has many. Series pages can then be added later without changing the design.
+Eighteen tables hold version 1: sixteen are needed by Must features, and two (ratings and reactions) only by Should features. The key idea is one chain: an accepted application creates a membership, the membership owns tasks, and it becomes a credit. Every project also has episodes: a film has exactly one, which the site never calls an episode, and a series has many. Series pages can then be added later without changing the design.
  
 ![Aflami ERD](../../design/exports/Aflami_ERD.png)
  
@@ -158,7 +158,7 @@ Source: `design/diagrams/Aflami_ERD.drawio`.
 | tasks | A piece of work: owner, status, deadline, and optionally its episode | projects, memberships, episodes (optional) | Owner becomes empty when that member leaves; the owner or a manager can reopen a done task |
 | task_attachments | Images, files or links on a task | tasks | Size limit per file |
 | credits | One line of the credits | projects, memberships, episodes (optional) | Proposed from the team in the order of the film role list (2.1), then approved; membership is empty for people outside Aflami; an empty episode means the whole film or series |
-| ratings | A creator's star rating of a film, 1 to 5 | users, projects | One per user and film; the film's own team cannot rate it |
+| ratings | A creator's star rating of a film, 1 to 5 (Should) | users, projects | One per user and film; the film's own team cannot rate it |
 | reactions (Should) | A like or dislike | users, projects | One per user and film; needs an account |
 | notifications | A message to one user inside Aflami | users, projects | Read or unread |
 | announcements | A message from the owner to the whole team: a title and the text | projects, users (author) | `audience_role` is stored but stays empty in version 1; sending to one role only is Future |
@@ -294,7 +294,7 @@ Sources: `design/diagrams/Aflami_Class_Diagram.drawio`, `design/diagrams/Aflami_
  
 | Service | Module | Methods |
 | --- | --- | --- |
-| PermissionGuard | Shared | canAct(user, project, action): boolean |
+| PermissionGuard | Shared | canAct(user, project, action): boolean (user is empty for a visitor; SD-4 shows how it decides) |
 | NotificationService | Shared | notify(user, type, itemId): Notification; markRead(notification, user): void |
 | FileService | Shared | uploadLink(type, sizeBytes): UploadLink (checks the type and size, then a signed link for one upload); openLink(key): string (a link that expires) |
 | ActivityLogService | Shared | record(project, actor, action, itemId): ActivityLog |
@@ -308,7 +308,7 @@ Sources: `design/diagrams/Aflami_Class_Diagram.drawio`, `design/diagrams/Aflami_
 | AnnouncementService | Casting and team | post(project, title, body, actor): Announcement (notifies every active member) |
 | TaskService | Tasks | create(project, data, actor): Task; assign(task, owner, actor): void; updateStatus(task, status, user): void; reopen(task, actor): void; attach(task, fileKeyOrUrl, user): TaskAttachment |
 | CreditService | Film page | proposeFromTeam(project, actor): Credit[] (in the order of the film role list); add(project, data, actor): Credit (someone without an Aflami account, Should); edit(credit, data, actor): void; approve(credit, actor): void; remove(credit, actor): void (a Proposed line only) |
-| RatingService | Film page | rate(project, user, stars): Rating; react(project, user, value): Reaction (Should) |
+| RatingService | Film page | rate(project, user, stars): Rating (Should); react(project, user, value): Reaction (Should) |
  
 *The use cases' supporting steps map onto these methods: UC-17 Upload a file is `FileService.uploadLink`, after which the browser uploads the file itself, UC-20 Notify a user is `NotificationService.notify`, UC-21 Add a team member is `MembershipService.addMember`, and UC-22 Check permission is `PermissionGuard.canAct`.*
  
@@ -462,16 +462,31 @@ Participants: Owner or Manager, Visitor or Viewer, Web app, PermissionGuard, Cre
 Covers: FR-FILM-01, FR-FILM-02, FR-FILM-03, FR-ACC-02, NFR-PRV-02.
 
 ### SD-4 Permission check on any request (Anas)
- 
-Participants: User, Web app, API module, PermissionGuard, Database.
- 
-1. The user sends a request about a project.
-2. PermissionGuard reads the user's membership in that project.
-3. No active membership, or a permission too low: the request is refused and nothing changes.
-4. Otherwise the module handles the request.
-Covers: FR-ACC-02, NFR-PRV-01.
- 
- 
+
+![Aflami sequence diagram SD-4: permission check on any request](../../design/exports/Aflami_Sequence_SD4_Permission_Check.png)
+
+Source: `design/diagrams/Aflami_Sequence_SD4_Permission_Check.drawio`.
+
+Participants: Signed-in user or visitor, Web app, a service of any module, PermissionGuard, Database.
+
+1. The user chooses an action in a project, and the web app calls the service method with the actor, which the API takes from the session; a visitor has none.
+2. The service calls `PermissionGuard.canAct(actor, project, action)`, which finds the action's rule in the table below; an action that no rule names is refused (DD-03).
+3. A Public rule needs no sign-in. Any other rule refuses a visitor; for a signed-in actor, the guard reads the actor's membership in the project, and its film roles when the rule names the Screenwriter, and compares them with the rule.
+4. Refused: nothing is read or changed, and the web app says why. Allowed: the service checks the record itself (its state, and for start or finish that the actor owns the task), then reads or changes it in one transaction.
+
+| Level | Who | Actions |
+| --- | --- | --- |
+| Public | Anyone, without an account | Open a published film page, or an Open casting call's link |
+| Creator | A signed-in Creator | Apply to an Open call (UC-05); rate a published film, unless on its team (UC-14, Should) |
+| Member | An ACTIVE member | Open the project, its team, tasks and credits; open the script through a link that expires; start and finish their own tasks; attach files |
+| Screenwriter | An ACTIVE member with the Screenwriter film role, a Manager or the Owner | Upload the script (FR-PRJ-04) |
+| Manager | A Manager or the Owner | Casting calls; applications; invitations; create, assign and reopen tasks; credits; film details; announcements; the activity log |
+| Owner | The Owner only | Publish, hide and show the film page; give or remove manager rights |
+
+*A permission comes only from memberships. `projects.created_by` records who created the project, for history; the guard never reads it, so the two cannot disagree. A LEFT membership counts as none. Should features take the level of the area they belong to.*
+
+Covers: FR-ACC-02, FR-ACC-03, FR-PRJ-04, FR-FILM-02, FR-FILM-03, NFR-PRV-01, NFR-PRV-05, NFR-SEC-05, NFR-MNT-01.
+
 ## 7 Diagram checklist and consistency checks
  
 Seven diagram types make the full set the supervisor asked for; tick each when its image and its "Covers" line are in place.
@@ -482,7 +497,13 @@ Seven diagram types make the full set the supervisor asked for; tick each when i
 - [x] Class diagram, section 3 (Anas, week 13)
 - [x] Activity diagram, section 4 (Abdullah, week 13)
 - [x] State diagrams: the journey overview, and diagrams 1 to 4 for the team, the tasks, the credits and the project, section 5 (Abdullah, week 13)
-- [ ] Sequence diagrams SD-1 to SD-3 (Abdullah) and SD-4 (Anas), section 6 (week 13); SD-1 to SD-3 are done, SD-4 is next
+- [x] Sequence diagrams SD-1 to SD-3 (Abdullah) and SD-4 (Anas), section 6 (week 13)
 
-
-
+**Before sending to the supervisor, check that the diagrams agree:**
+ 
+- Every actor in the use case diagram is a role in section 1.5 of the SRS.
+- Every class in a sequence diagram, and every method it calls, is in the class diagram.
+- Every saved state in a state diagram is a value of a status field in the ERD; a journey stage says in grey that nothing is saved.
+- Every event a person triggers in a state diagram is a service method in section 3; an AI draft (Should) is the background job of DD-09, and its approved result is saved through those same methods.
+- Every step of the activity diagram matches a use case.
+- Every diagram's "Covers" IDs appear in the SRS traceability matrix (SRS 5.2).

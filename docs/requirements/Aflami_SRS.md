@@ -2,7 +2,7 @@
 
 ## Document control
 
-This is the requirements document for Aflami, structured after the SRS outline in ISO/IEC/IEEE 29148:2018. Sections 1 to 5 below follow that outline; replace each *Guidance* line with your own text and delete it before you submit.
+This is the requirements document for Aflami, structured after the SRS outline in ISO/IEC/IEEE 29148:2018. Sections 1 to 5 below follow that outline.
 
 | Field | Value |
 | --- | --- |
@@ -11,7 +11,7 @@ This is the requirements document for Aflami, structured after the SRS outline i
 | Authors | Anas Aazib, Abdullah Al-Jadani |
 | Supervisor | Prof. Adeeb Rida Noor |
 | Standard | ISO/IEC/IEEE 29148:2018, Software requirements specification |
-| Version | 0.1, template |
+| Version | 0.9, for the supervisor's review (week 13) |
 
 **Requirement IDs.** Every requirement gets an ID that never changes, so diagrams and tests can point to it:
 
@@ -33,7 +33,7 @@ This is the requirements document for Aflami, structured after the SRS outline i
 
 This SRS defines what version 1 of Aflami must do. It is the agreement between the team, the supervisor and the committee, and the base for the design in CPIT-498 and the build and tests in CPIT-499.
 
-*Guidance: name the readers and how each one uses this document.*
+Its readers are the supervisor and the committee, who check that version 1 is complete and realistic, and the two students, who design from it in CPIT-498 and build and test against it in CPIT-499; section 4 gives the check for every requirement, and section 5.2 ties each one to its story, use case, diagrams and test.
 
 ### 1.2 Scope
 
@@ -54,7 +54,7 @@ Every feature has one of three levels:
 | Casting | Publish casting calls, apply, shortlist, accept or reject; a public link for each call; edit and close a call; applicant adds a photo or a demo-reel link | A page of all open calls; call details (location, shooting dates, paid or unpaid); my applications page; share buttons | Withdraw an application; filter and sort applications; automatic posting to social media; audition scheduling |
 | Team | Invitations to registered users, accepted or declined on an invitation page; team page with each member's film roles; character names for actors | Leave a project; owner removes a member; change a member's film roles | Team contact list |
 | Tasks | Create, assign and update tasks (To do, In progress, Done); the owner or a manager reopens a done task; task attachments (images, files and links, with a size limit) | Overdue tasks highlighted; task comments; board view | Production scheduling; calendar view; my tasks across projects |
-| Film page and credits | Credits proposed from the team, then edited and approved; film page with the YouTube video, synopsis, details and credits; only the owner publishes; public or hidden at any time; watching without an account; star rating 1 to 5 by Creators outside the film's team | Series: a project can be a series, with a series page listing its seasons and episodes and a page for each episode; credits for people without an account; credits linked to profiles; public gallery of films; like or dislike | "Next episode" pop-up (needs our own video player); our own video hosting or direct upload to YouTube; viewer search and recommendations; reorder credits; viewer comments |
+| Film page and credits | Credits proposed from the team, then edited and approved; film page with the YouTube video, synopsis, details and credits; only the owner publishes; public or hidden at any time; watching without an account | Star rating 1 to 5 by Creators outside the film's team; series: a project can be a series, with a series page listing its seasons and episodes and a page for each episode; credits for people without an account; credits linked to profiles; public gallery of films; like or dislike | "Next episode" pop-up (needs our own video player); our own video hosting or direct upload to YouTube; viewer search and recommendations; reorder credits; viewer comments |
 | Communication | Announcements from the owner; activity log of who approved what, and when | Team chat | — |
 | Interface and platform | Arabic, right to left, on phone and desktop; Arabic and English switch for the interface (team content is never translated); terms of use and privacy policy; help and FAQ | Light and dark theme; admin panel | Landing page; report inappropriate content |
 | AI assistance | — | AI drafts of the roles and casting ad, the tasks, and the film title and description, from the script; a person approves, edits or rejects every draft; every suggestion and its outcome is logged; script consent and privacy before any script is sent | — |
@@ -65,15 +65,15 @@ Every feature has one of three levels:
 
 Aflami is a new, self-contained web system. Today the same teams use WhatsApp, shared drives and social media for these steps; Aflami keeps the project, the people and their roles in one linked record.
 
-| Interface (29148) | What Aflami needs (draft) |
+| Interface (29148) | What Aflami needs |
 | --- | --- |
 | 1.3.1 System interfaces | YouTube embedded player on the film page |
-| 1.3.2 User interfaces | Arabic-first, right-to-left, responsive web screens (list them; wireframes in the design document) |
+| 1.3.2 User interfaces | Arabic-first, right-to-left, responsive web screens, designed for a phone 360 pixels wide first (NFR-USA-01, NFR-USA-07) |
 | 1.3.3 Hardware interfaces | None: any device with a current web browser |
-| 1.3.4 Software interfaces | PostgreSQL database; YouTube embed; GitHub Actions and Vercel for build and deployment |
+| 1.3.4 Software interfaces | PostgreSQL database and file storage on Supabase; the YouTube embedded player; Vercel and GitHub Actions for build, deployment and the daily jobs |
 | 1.3.5 Communications interfaces | HTTPS only. No email in version 1: invitations and results appear as notifications inside Aflami. |
-| 1.3.6 Memory constraints | None specific. *Guidance: write "None" if that stays true.* |
-| 1.3.7 Operations | Who deploys, how often the database is backed up, how a release is rolled back |
+| 1.3.6 Memory constraints | None: Aflami runs in a current web browser, and each uploaded file is at most 10 MB (NFR-SEC-04) |
+| 1.3.7 Operations | Vercel deploys every push to main, and every pull request gets its own preview link; GitHub Actions runs the tests, exports the database once a day to the private `aflami-backups` repository and runs the daily cleanup; a release is rolled back by promoting the previous Vercel deployment |
 | 1.3.8 Site adaptation | Arabic locale and the Asia/Riyadh time zone for dates and deadlines |
 
 ### 1.4 Product functions
@@ -91,7 +91,7 @@ Every person has one account type. Inside each project, a Creator also has one p
 | --- | --- | --- | --- |
 | Visitor | Anyone without an account | Watch published film pages | None |
 | Viewer | Account of type Viewer | Everything a Visitor can, plus like or dislike a film (Should) | Basic web use |
-| Creator | Account of type Creator, chosen at sign-up or switched to later from Viewer | Create projects, apply to casting calls, join teams, and rate films 1 to 5 (not their own team's film) | Basic web use |
+| Creator | Account of type Creator, chosen at sign-up or switched to later from Viewer | Create projects, apply to casting calls, join teams, and rate films 1 to 5 (Should; not their own team's film) | Basic web use |
 | Owner | Creator who creates the project | Everything, including publishing or hiding the film page and giving or removing manager rights | Basic web use |
 | Manager | Member chosen by the owner; a project can have several | Everything except publishing and managing permissions: accept applicants, invite people, manage tasks, approve credits | Basic web use |
 | Member | Accepted team member | See the project, update the tasks they own; a member with the Screenwriter film role can also upload a new script | Basic web use |
@@ -109,7 +109,7 @@ Every person has one account type. Inside each project, a Creator also has one p
 
 - YouTube embedding stays available for public and unlisted videos.
 - Two student teams agree to take part in the evaluation.
-- *Guidance: add each assumption whose failure would change a requirement.*
+- The free plans of Vercel, Supabase and GitHub keep their current limits through CPIT-499 and the evaluation (NFR-PERF-02; design document, DD-05 to DD-08).
 
 ### 1.8 Apportioning of requirements
 
@@ -117,28 +117,33 @@ Each requirement in section 3 takes the level of its feature in section 1.2: Mus
 
 ## 2 References
 
-1. ISO/IEC/IEEE 29148:2018, *Systems and software engineering — Life cycle processes — Requirements engineering*.
-2. Aflami project proposal, CPIT-498, revised version.
-3. Aflami MVP journey document.
-4. Aflami first presentation, November 2026.
-5. [Aflami Software Design Document](../design/Aflami_SDD.md).
+1. ISO/IEC/IEEE 29148:2018, *Systems and software engineering — Life cycle processes — Requirements engineering*, second edition, 2018.
+2. Aflami project proposal, CPIT-498, revised version, November 2026 (`docs/proposal/`).
+3. Aflami MVP journey document, 2026: the four steps that section 1.2 follows (create the project, build the team, distribute the work, publish the film).
+4. Aflami first presentation, version 3, November 2026 (`docs/presentations/Aflami_First_Presentation_v3.pptx`).
+5. [Aflami Software Design Document](../design/Aflami_SDD.md), kept in step with this document.
+6. Aflami version 1 scope sheet (`docs/requirements/Aflami Version 1 Scope.xlsx`), cited as "scope row".
+7. [Aflami hosting plan and risks](../proposal/Aflami_Hosting_and_Risks.md), cited as R-01 to R-17.
 
-*Guidance: list every document this SRS depends on, with its version and date.*
+The versions in the project repository are the ones this document refers to.
 
 ## 3 Specific requirements
 
-Each requirement below uses the attributes from Document control. The rows marked *starter* come from the design so far; keep, edit or delete them.
+Each requirement below uses the attributes from Document control.
 
 ### 3.1 External interfaces
 
 - **YouTube link:** the owner pastes a public or unlisted YouTube link; the system checks it is a YouTube video link before saving.
-- *Guidance: for each input and output, give its source or destination, valid range and format.*
+- **Account details:** a name, an email and a password, typed by the person at sign-up; the email is unique (section 3.5), and the password is kept only as a salted hash (NFR-SEC-01).
+- **Files:** scripts, applicants' photos and task attachments go from the browser straight to private storage through a link made for one upload; the allowed types and the 10 MB limit are in NFR-SEC-04, and files open only through links that expire (NFR-SEC-05).
+- **Dates and deadlines:** entered and shown in the Asia/Riyadh time zone (NFR-USA-06).
+- **Notifications:** shown inside Aflami only; version 1 sends no email (1.3.5).
 
 ### 3.2 Functions
 
 Functions are written three ways that point to each other: user stories (what people want), use cases (how the interaction runs) and requirements (what the system shall do, one testable sentence each).
 
-**User stories.** Every Must feature in section 1.2 is covered by one or more of the 35 stories below. Each is written as "As a …, I want …, so that …", with acceptance criteria in the form "Given …, when …, then …". Should features get their stories before they are built. The story map shows all of them by area.
+**User stories.** Every Must feature in section 1.2 is covered by one or more of the 35 stories below; one of them, US-FILM-06 (the star rating), is for a Should feature. Each is written as "As a …, I want …, so that …", with acceptance criteria in the form "Given …, when …, then …". Should features get their stories before they are built. The story map shows all of them by area.
 
 ![Aflami user story map](../../design/exports/Aflami_User_Story_Map.png)
 
@@ -362,7 +367,7 @@ Source: `design/diagrams/Aflami_User_Story_Map.drawio`.
 - Given a draft or hidden page, when a visitor opens its link, then they see that it is not available.
 - *Related: UC-12, FR-FILM-02.*
 
-**US-FILM-06 Rate a film 1 to 5 stars.** As a Creator, I want to rate a film from 1 to 5 stars, so that good work gets recognised.
+**US-FILM-06 Rate a film 1 to 5 stars (Should).** As a Creator, I want to rate a film from 1 to 5 stars, so that good work gets recognised.
 
 - Given a published film, when a Creator outside its team rates it, then the page shows the new average and count.
 - Given a Creator who rated it before, when they rate again, then their rating changes and the count stays the same.
@@ -386,7 +391,7 @@ Source: `design/diagrams/Aflami_User_Story_Map.drawio`.
 | UC-11 | Publish the film page | Owner | Abdullah |
 | UC-12 | Watch a film page | Visitor or Viewer | Abdullah |
 | UC-13 | Respond to an invitation | Invited Creator | Abdullah |
-| UC-14 | Rate a film | Creator | Abdullah |
+| UC-14 | Rate a film (Should) | Creator | Abdullah |
 | UC-15 | Hide or show the film page | Owner | Abdullah |
 | UC-16 | Reopen a done task | Owner, Manager | Abdullah |
 
@@ -613,7 +618,7 @@ Sources: `design/diagrams/Aflami_Use_Case_Diagram.drawio`, `design/diagrams/Afla
 >
 > Postcondition: the Creator is an active member, or the invitation is Declined. Related: FR-TEAM-02, US-TEAM-02.
 
-> **UC-14 Rate a film.** Primary actor: Creator. Preconditions: Signed in as a Creator; the page is published.
+> **UC-14 Rate a film (Should).** Primary actor: Creator. Preconditions: Signed in as a Creator; the page is published.
 >
 > Main flow:
 >
@@ -655,7 +660,7 @@ Sources: `design/diagrams/Aflami_Use_Case_Diagram.drawio`, `design/diagrams/Afla
 >
 > Postcondition: the task is In progress again. Related: FR-TSK-02, US-TSK-03.
 
-**Functional requirements (starter):**
+**Functional requirements:**
 
 | ID | Requirement | Priority | Source | Verification |
 | --- | --- | --- | --- | --- |
@@ -692,8 +697,8 @@ Sources: `design/diagrams/Aflami_Use_Case_Diagram.drawio`, `design/diagrams/Afla
  
 | ID | Requirement | Priority | Source | Verification |
 | --- | --- | --- | --- | --- |
-| NFR-PERF-01 | 95% of page requests shall finish within 3 seconds while 20 users use Aflami at the same time *(proposed)*. | Should | Evaluation with two teams | Test: load test before the evaluation |
-| NFR-PERF-02 | The system shall hold at least 50 accounts and 10 projects with their files within the free hosting limits *(proposed)*. | Should | Hosting plan | Analysis |
+| NFR-PERF-01 | 95% of page requests shall finish within 3 seconds while 20 users use Aflami at the same time. | Should | Evaluation with two teams | Test: load test before the evaluation |
+| NFR-PERF-02 | The system shall hold at least 50 accounts and 10 projects with their files within the free hosting limits. | Should | Hosting plan | Analysis |
  
 ### 3.5 Logical database requirements
  
@@ -730,9 +735,9 @@ Sources: `design/diagrams/Aflami_Use_Case_Diagram.drawio`, `design/diagrams/Afla
 | NFR-SEC-01 | Security | Passwords shall be stored only as salted hashes. | Must | Inspection |
 | NFR-SEC-02 | Security | Every page and every request to the server shall use HTTPS. | Must | Inspection |
 | NFR-SEC-03 | Security | Changing a password shall require the current password. | Must | Test |
-| NFR-SEC-04 | Security | The system shall accept only allowed file types (scripts: PDF, DOCX, Pages, TXT; photos and attachments: images, PDF, DOCX, TXT), each up to 10 MB *(proposed)*. | Must | Test |
-| NFR-SEC-05 | Security | Scripts and task attachments shall open only through links that expire within 15 minutes *(proposed)*, made after a permission check. | Must | Test |
-| NFR-SEC-06 | Security | Sign-in to an account shall pause for 15 minutes after 5 failed attempts *(proposed)*. | Should | Test |
+| NFR-SEC-04 | Security | The system shall accept only allowed file types (scripts: PDF, DOCX, Pages, TXT; photos and attachments: images, PDF, DOCX, TXT), each up to 10 MB. | Must | Test |
+| NFR-SEC-05 | Security | Scripts and task attachments shall open only through links that expire within 15 minutes, made after a permission check. | Must | Test |
+| NFR-SEC-06 | Security | Sign-in to an account shall pause for 15 minutes after 5 failed attempts. | Should | Test |
 | NFR-SEC-07 | Security | Passwords and keys for the database and file storage shall never be stored in the repository. | Must | Inspection |
 | NFR-PRV-01 | Privacy | A project's script shall be visible only to its active members. | Must | Test |
 | NFR-PRV-02 | Privacy | Public pages (film pages and casting call links) shall show names, film roles and credits only, never email addresses. | Must | Test |
@@ -741,14 +746,16 @@ Sources: `design/diagrams/Aflami_Use_Case_Diagram.drawio`, `design/diagrams/Afla
 | NFR-PRV-05 | Privacy | An application shall be visible only to the applicant and to the owner and managers of that project. | Must | Test |
 | NFR-PRV-06 | Privacy | Personal files and records shall be deleted on the schedule in section 3.5. | Must | Test |
 | NFR-REL-01 | Reliability | The database shall be exported automatically once a day; the export shall be encrypted and kept outside the public repository. | Must | Inspection |
-| NFR-AVL-01 | Availability | The system shall be available 99% of the time during the evaluation weeks *(proposed)*. | Should | Analysis of uptime logs |
+| NFR-AVL-01 | Availability | The system shall be available 99% of the time during the evaluation weeks. | Should | Analysis of uptime logs |
 | NFR-MNT-01 | Maintainability | Automated tests shall run on every pull request before merge. | Must | Inspection |
 | NFR-MNT-02 | Maintainability | Each feature area (Accounts, Projects, Casting and team, Tasks, Film page) shall be a separate back-end module, with the services they all use in one Shared module, and no two modules shall depend on each other. | Must | Inspection |
 | NFR-PRT-01 | Portability | The system shall work on current Chrome, Safari, Firefox and Edge, on desktop and on Android and iOS phones. | Must | Test |
 
 ### 3.9 Supporting information
 
-*Guidance: point to the wireframes, the glossary and any sample data that helps a reader understand the requirements.*
+- The acronyms and terms are in section 5.1, and the film roles, in English and Arabic, in section 2.1 of the design document.
+- The screen designs are added to the design document when they are approved (plan task 25).
+- Tests use Arabic, English and mixed sample data for names, titles, tasks and credits (NFR-USA-05).
 
 ## 4 Verification
 
@@ -765,8 +772,9 @@ Every requirement in section 3 is checked in CPIT-499 by one of four methods: **
 | NFR-PERF-01, NFR-PERF-02, NFR-AVL-01 | Load test and analysis | Before and during the evaluation | Load test results, hosting usage report |
 | NFR-SEC-01, NFR-SEC-02, NFR-SEC-07, NFR-MNT-01, NFR-MNT-02, NFR-REL-01, NFR-USA-04 | Inspection | Before the final report | Review checklist |
 | NFR-PRV-04 | Demonstration | Before the final report | A deletion done on request |
+| FR-ACC-01, FR-ACC-03, FR-PRJ-01 to FR-PRJ-04, FR-FILM-03 | Test: integration tests of each flow, with the permission tests | Before the first integrated trial | Test report |
  
-*Guidance: keep one row per requirement group, and make sure no requirement in section 3 is left without a row.*
+Every requirement in section 3 appears in at least one row above.
 
 ## 5 Appendices
 
@@ -783,10 +791,44 @@ Every requirement in section 3 is checked in CPIT-499 by one of four methods: **
 
 ### 5.2 Traceability matrix
 
-This matrix ties every requirement to its story, use case, diagrams and test, so each diagram can be checked against the requirements.
+This matrix ties every Must requirement to its user story, use case, diagrams and test, so each diagram can be checked against the requirements. A Should requirement gets a row once a diagram covers it. Diagram names: Use case 1 to 3 (section 3.2); Component, Deployment, ERD, Class 1 to 3, Activity, State overview and 1 to 4, and SD-1 to SD-4 (design document).
 
 | Requirement | User story | Use case | Diagrams | Test |
 | --- | --- | --- | --- | --- |
-| FR-CST-02 | US-CST-02 | UC-06 | Sequence: accept an applicant; State: application; ERD: applications, memberships | Integration test: accept creates one membership |
-
-*Guidance: add one row per requirement as you write the diagrams in week 13.*
+| FR-ACC-01 | US-ACC-01 | UC-01 | Use case 1; ERD: users, user_settings | Test: registering saves a hashed password and default settings; a used email is refused |
+| FR-ACC-02 | US-ACC-06 | UC-22, which UC-03, UC-04, UC-06 to UC-08, UC-10, UC-11, UC-15 and UC-16 include | SD-4; SD-1 to SD-3; Component; Class 2 and 3: PermissionGuard; State 1 to 4 | Automated permission tests for every action, as a visitor, a member, a manager and the owner, on every pull request |
+| FR-ACC-03 | US-ACC-05 | UC-03 | SD-4; Use case 1; Class 2: MembershipService.setPermission; ERD: memberships | Test: a manager who gives manager rights is refused; the owner's change is in the activity log |
+| FR-PRJ-01 | US-PRJ-01 | UC-02 | Activity; State 4 and overview; Class 3: ProjectService.create; ERD: projects, episodes, scripts | Test: a new project is a Draft film with one episode, and its creator is its owner |
+| FR-PRJ-02 | US-PRJ-01, US-PRJ-02 | UC-02, UC-17 | State 4; Component: FileService; ERD: scripts | Test: an allowed script replaces the old file; a wrong type is refused; a non-member cannot open it |
+| FR-PRJ-04 | US-PRJ-02 | UC-02, UC-22 | SD-4; State 4; ERD: member_roles | Test: a member with the Screenwriter film role uploads the script; another member is refused |
+| FR-CST-01 | US-CST-01 | UC-04 | Activity; State 1 and overview; Class 2: CastingService; ERD: casting_calls | Test: a past deadline is refused; a valid call is Open with a public link |
+| FR-CST-02 | US-CST-02 | UC-06, UC-21 | SD-1; Activity; State 1; Class 2; ERD: applications, memberships | Integration test: accept creates one membership |
+| FR-TEAM-01 | US-TEAM-03 | UC-06, UC-21 | SD-1; Class 2: MembershipService.addFilmRole; ERD: member_roles | Test: accepting an active member for a second film role adds the role, not a second membership |
+| FR-TEAM-02 | US-TEAM-01, US-TEAM-02, US-ACC-07 | UC-07, UC-13 | State 1 and overview; Class 2: InvitationService; ERD: invitations | Test: an email with no account is refused; accepting the invitation adds the member |
+| FR-TSK-01 | US-TSK-02 | UC-09 | SD-2; Activity; State 2; Class 3: TaskService | Test: To do to Done and any step back are refused; only the task's owner moves it |
+| FR-TSK-02 | US-TSK-03 | UC-16 | SD-2; State 2; Class 3: TaskService.reopen | Test: a member, even the task's owner, cannot reopen; a manager's reopen returns it to In progress |
+| FR-FILM-01 | US-FILM-01, US-TEAM-04 | UC-10 | SD-3; Activity; State 3; Class 3: CreditService; ERD: credits | Demonstration: credits proposed from the team in film role order, then edited and approved |
+| FR-FILM-02 | US-FILM-05 | UC-12 | SD-3; SD-4 (Public rule); Activity; State 4 | Test: a visitor opens a published page; a draft or hidden page shows that the film is not available |
+| FR-FILM-03 | US-FILM-03 | UC-11 | SD-3; SD-4; Activity; State 3 and 4; Class 3: ProjectService.publish | Test: a manager's publish is refused; a missing YouTube link or an unapproved credit is listed |
+| NFR-USA-01 | US-ACC-08 | — | Screen designs | Inspection: every screen in Arabic, right to left, on a phone and a desktop |
+| NFR-USA-03 | US-ACC-08 | — | ERD: user_settings | Test: a new account starts in Arabic; the switch changes the interface and follows the user to another device |
+| NFR-USA-04 | US-ACC-08 | — | Design document 2.1: film roles as interface labels | Inspection: what teams write is shown as written in both languages |
+| NFR-USA-05 | — | — | — | Test with Arabic, English and mixed sample data in names, titles, tasks and credits |
+| NFR-USA-06 | US-CST-06 | UC-04 | State 1: the daily job closes calls | Test: a deadline is shown, and the call closes, in Asia/Riyadh time |
+| NFR-USA-07 | — | — | Screen designs | Test: every screen at 360 pixels wide, with no sideways scrolling |
+| NFR-SEC-01 | US-ACC-01 | UC-01 | ERD: users | Inspection: only the salted hash is stored |
+| NFR-SEC-02 | — | — | Deployment | Inspection: every page and request uses HTTPS |
+| NFR-SEC-03 | US-ACC-04 | — | Services table: AccountService.changePassword | Test: a wrong current password is refused |
+| NFR-SEC-04 | US-PRJ-01, US-CST-04, US-TSK-04 | UC-02, UC-05, UC-17, UC-18 | State 1 and 2; Component: FileService.uploadLink | Test: a wrong type, or a file over 10 MB, is refused before the upload |
+| NFR-SEC-05 | US-TSK-04 | UC-17, UC-18 | SD-4; Component: FileService.openLink | Test: a script link stops working after 15 minutes |
+| NFR-SEC-07 | — | — | Deployment | Inspection: secrets only in Vercel and GitHub settings, with secret scanning on |
+| NFR-PRV-01 | US-ACC-06 | UC-22 | SD-4; ERD: scripts | Test: a non-member, or a member who left, cannot open the script |
+| NFR-PRV-02 | US-CST-03, US-FILM-05 | UC-05, UC-12 | SD-3; State 1 and 4 | Test: the public film page and the call link show no email address |
+| NFR-PRV-03 | US-ACC-01, US-ACC-09 | UC-01 | — | Test: registering without accepting the terms is refused |
+| NFR-PRV-05 | US-CST-02, US-CST-04 | UC-06 | SD-4; State 1 | Test: a member without manager rights cannot list the applications |
+| NFR-PRV-06 | — | — | State 1: photo deletion; Component: daily cleanup | Test: the daily job deletes a not-accepted applicant's photo 30 days after the call closes |
+| NFR-REL-01 | — | — | Deployment: `aflami-backups` | Inspection: the daily export runs and opens only with the key |
+| NFR-MNT-01 | — | — | Deployment: GitHub Actions; SD-4 | Inspection: a pull request cannot merge until the tests pass |
+| NFR-MNT-02 | — | — | Component; Class 1: modules | Inspection: no two modules depend on each other |
+| NFR-PRT-01 | — | — | Component: web app | Test on Chrome, Safari, Firefox and Edge, on desktop, Android and iOS |
+| FR-PRJ-03 (Should) | — | UC-02 | State 4 and overview; Class 3: ProjectService.addEpisode; ERD: episodes | Test when built: a series holds episodes numbered within each season |
