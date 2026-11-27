@@ -796,12 +796,12 @@ Every requirement in section 3 appears in at least one row above.
 
 ### 5.2 Traceability matrix
 
-This matrix ties every Must requirement to its user story, use case, diagrams and test, so each diagram can be checked against the requirements. A Should requirement gets a row once a diagram covers it. Diagram names: Use case 1 to 3 (section 3.2); Component, Deployment, ERD, Class 1 to 3, Activity, State overview and 1 to 4, and SD-1 to SD-4 (design document).
+This matrix ties every Must requirement to its user story, use case, diagrams and test, so each diagram can be checked against the requirements. A Should requirement gets a row once a diagram covers it. Diagram names: Use case 1 to 3 (section 3.2); Component, Deployment, ERD, Class 1 to 3, Activity, State overview and 1 to 4, SD-1 to SD-4, and the screen designs (design document, section 8).
 
 | Requirement | User story | Use case | Diagrams | Test |
 | --- | --- | --- | --- | --- |
 | FR-ACC-01 | US-ACC-01 | UC-01 | Use case 1; ERD: users, user_settings | Test: registering saves a hashed password and default settings; a used email is refused |
-| FR-ACC-02 | US-ACC-06 | UC-22, which UC-03, UC-04, UC-06 to UC-08, UC-10, UC-11, UC-15 and UC-16 include | SD-4; SD-1 to SD-3; Component; Class 2 and 3: PermissionGuard; State 1 to 4 | Automated permission tests for every action, as a visitor, a member, a manager and the owner, on every pull request |
+| FR-ACC-02 | US-ACC-06 | UC-22, which UC-03, UC-04, UC-06 to UC-08, UC-10, UC-11, UC-15 and UC-16 include | SD-4; SD-1 to SD-3; Component; Class 2 and 3: PermissionGuard; State 1 to 4 | Automated permission tests for every action, as a visitor, a member, a manager and the owner, on every pull request; the first 76 are built in the permission prototype |
 | FR-ACC-03 | US-ACC-05 | UC-03 | SD-4; Use case 1; Class 2: MembershipService.setPermission; ERD: memberships | Test: a manager who gives manager rights is refused; the owner's change is in the activity log |
 | FR-PRJ-01 | US-PRJ-01 | UC-02 | Activity; State 4 and overview; Class 3: ProjectService.create; ERD: projects, episodes, scripts | Test: a new project is a Draft film with one episode, and its creator is its owner |
 | FR-PRJ-02 | US-PRJ-01, US-PRJ-02 | UC-02, UC-17 | State 4; Component: FileService; ERD: scripts | Test: an allowed script replaces the old file; a wrong type is refused; a non-member cannot open it |
@@ -815,12 +815,12 @@ This matrix ties every Must requirement to its user story, use case, diagrams an
 | FR-FILM-01 | US-FILM-01, US-TEAM-04 | UC-10 | SD-3; Activity; State 3; Class 3: CreditService; ERD: credits | Demonstration: credits proposed from the team in film role order, then edited and approved |
 | FR-FILM-02 | US-FILM-05 | UC-12 | SD-3; SD-4 (Public rule); Activity; State 4 | Test: a visitor opens a published page; a draft or hidden page shows that the film is not available |
 | FR-FILM-03 | US-FILM-03 | UC-11 | SD-3; SD-4; Activity; State 3 and 4; Class 3: ProjectService.publish | Test: a manager's publish is refused; a missing YouTube link or an unapproved credit is listed |
-| NFR-USA-01 | US-ACC-08 | — | Screen designs | Inspection: every screen in Arabic, right to left, on a phone and a desktop |
+| NFR-USA-01 | US-ACC-08 | — | Screen designs 1 to 17 and V1 to V5 | Inspection: every screen in Arabic, right to left, on a phone and a desktop |
 | NFR-USA-03 | US-ACC-08 | — | ERD: user_settings | Test: a new account starts in Arabic; the switch changes the interface and follows the user to another device |
 | NFR-USA-04 | US-ACC-08 | — | Design document 2.1: film roles as interface labels | Inspection: what teams write is shown as written in both languages |
 | NFR-USA-05 | — | — | — | Test with Arabic, English and mixed sample data in names, titles, tasks and credits |
 | NFR-USA-06 | US-CST-06 | UC-04 | State 1: the daily job closes calls | Test: a deadline is shown, and the call closes, in Asia/Riyadh time |
-| NFR-USA-07 | — | — | Screen designs | Test: every screen at 360 pixels wide, with no sideways scrolling |
+| NFR-USA-07 | — | — | Screen designs (phone layouts in CPIT-499) | Test: every screen at 360 pixels wide, with no sideways scrolling |
 | NFR-SEC-01 | US-ACC-01 | UC-01 | ERD: users | Inspection: only the salted hash is stored |
 | NFR-SEC-02 | — | — | Deployment | Inspection: every page and request uses HTTPS |
 | NFR-SEC-03 | US-ACC-04 | — | Services table: AccountService.changePassword | Test: a wrong current password is refused |

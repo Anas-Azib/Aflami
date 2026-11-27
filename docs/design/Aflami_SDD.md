@@ -485,6 +485,8 @@ Participants: Signed-in user or visitor, Web app, a service of any module, Permi
 
 *A permission comes only from memberships. `projects.created_by` records who created the project, for history; the guard never reads it, so the two cannot disagree. A LEFT membership counts as none. Should features take the level of the area they belong to.*
 
+The [permission prototype plan](Aflami_Permission_Prototype_Plan.md) turns this table into 76 automated tests on the real stack, before CPIT-499.
+
 Covers: FR-ACC-02, FR-ACC-03, FR-PRJ-04, FR-FILM-02, FR-FILM-03, NFR-PRV-01, NFR-PRV-05, NFR-SEC-05, NFR-MNT-01.
 
 ## 7 Diagram checklist and consistency checks
@@ -498,15 +500,8 @@ Seven diagram types make the full set the supervisor asked for; tick each when i
 - [x] Activity diagram, section 4 (Abdullah, week 13)
 - [x] State diagrams: the journey overview, and diagrams 1 to 4 for the team, the tasks, the credits and the project, section 5 (Abdullah, week 13)
 - [x] Sequence diagrams SD-1 to SD-3 (Abdullah) and SD-4 (Anas), section 6 (week 13)
+- [x] Screen designs, first drafts, section 8 (week 13)
 
-**Before sending to the supervisor, check that the diagrams agree:**
- 
-- Every actor in the use case diagram is a role in section 1.5 of the SRS.
-- Every class in a sequence diagram, and every method it calls, is in the class diagram.
-- Every saved state in a state diagram is a value of a status field in the ERD; a journey stage says in grey that nothing is saved.
-- Every event a person triggers in a state diagram is a service method in section 3; an AI draft (Should) is the background job of DD-09, and its approved result is saved through those same methods.
-- Every step of the activity diagram matches a use case.
-- Every diagram's "Covers" IDs appear in the SRS traceability matrix (SRS 5.2).
 
 ## 8 Screen designs (first drafts)
 
